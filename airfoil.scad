@@ -94,6 +94,6 @@ module airfoil_help(){
     <b><i>wing_angle</b></i>: a set of angles, [sweep,slope] (optional, default=[0,0])<br>\
     <b><i>wing_length</b></i>: length of the wing (optional, default=1000)");
 }
-airfoil_help();
+//airfoil_help();
 //translate([0,0,100]) airfoil_poly();
 //airfoil_simple_wing(airfoils=[[100,0015],[200,2414],[100,0015],[200,2414],[100,0015]], wing_angle=[20,-20]);
