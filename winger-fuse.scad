@@ -18,19 +18,24 @@ SPAR_C=FUSELAGE_L-140;  // center; 140=spar center distance from wing trailing e
 HATCH_F = FUSELAGE_L*.15;  // front
 HATCH_L = FUSELAGE_L*.25;
 
+/* Rail guide.
+   0Z=surface of airframe.
+   0Y=top (front) of guide. */
 module rail_guide1010(length, extra_h=0) {
-    NORMAL_STEM_h = 5;
-    STEM_h = NORMAL_STEM_h + extra_h;
-    fwd(extra_h)
-    difference() {
+    THIKNESS = 1.5;  // as if the guide were a sheet stamping
+    WING_W = 10; // width of the wings that engage with rail
+    NORMAL_STEM_H = 5;
+    STEM_W = 6;
+    STEM_H = NORMAL_STEM_H + extra_h;
+    up(NORMAL_STEM_H) difference() {
         union() {
             // horizontal
-            back(STEM_h) cube([length, 1.5, 10], anchor=LEFT+FWD);
+            cube([WING_W, length, THIKNESS], anchor=FWD+DOWN);
             // stem
-            cube([length, STEM_h, 6], anchor=LEFT+FWD);
+            down(STEM_H) cube([STEM_W, length, STEM_H], anchor=FWD+DOWN);
         }
         // cutout
-        back(2.5) cube([length, STEM_h, 2.5], anchor=LEFT+FWD);
+        up(THIKNESS) cube([STEM_W-2*THIKNESS, length, STEM_H], anchor=FWD+UP);
     }
 }
 
@@ -38,38 +43,37 @@ module fuselage_seamless() {
     difference() {
         union() {
             // main outside shape
-            linear_extrude(65, center=true) {
+            rot([90,0,90]) linear_extrude(FUSELAGE_W, center=true) {
                 n = A_CAMBER*100+A_THICKNESS;
                 airfoil_poly(c=FUSELAGE_L, naca=n);
             }
             // front lug
-            right(FUSELAGE_L*.4+.1) back(fuselage_h/2) rail_guide1010(20, 10);
+            back(FUSELAGE_L*.4+.1) up(fuselage_h/2) rail_guide1010(20, 10);
             // rear lug (front conincides with cut line avoids the need for support)
-            right(SPAR_C+SPAR_D)    back(fuselage_h/2) rail_guide1010(35, 13);
+            back(SPAR_C+SPAR_D)    up(fuselage_h/2) rail_guide1010(35, 13);
         }
         // MMT
-        right(50) xcyl(l=FUSELAGE_L, d=MMT_D, anchor=LEFT);
+        back(FUSELAGE_L) ycyl(l=FUSELAGE_L*2/3, d=MMT_D, anchor=BACK);
         // spar carrythrough
-        right(SPAR_C) zcyl(l=FUSELAGE_W+10, d=SPAR_D);
+        back(SPAR_C) xcyl(l=FUSELAGE_W+10, d=SPAR_D);
         // wedge cutout
         wedge_L=80;
-        right(FUSELAGE_L-wedge_L)
-            prismoid(size1=[MMT_D+4,fuselage_h],
-                size2=[FUSELAGE_W-10,fuselage_h],
-                h=-wedge_L,
-                orient=LEFT);
+        back(FUSELAGE_L)
+            prismoid(size1=[FUSELAGE_W-10,fuselage_h],
+                size2=[MMT_D+4,fuselage_h],
+                h=wedge_L,
+                orient=FWD);
         // fuselage reference lines
-        up  (FUSELAGE_W/2) right(FUSELAGE_L/2) cube([FUSELAGE_L/2, .3, .3], anchor=LEFT);
-        down(FUSELAGE_W/2) right(FUSELAGE_L/2) cube([FUSELAGE_L/2, .3, .3], anchor=LEFT);
+        right(FUSELAGE_W/2) back(FUSELAGE_L) ycyl(d=.3,l=FUSELAGE_L/2, anchor=BACK);
+        left (FUSELAGE_W/2) back(FUSELAGE_L) ycyl(d=.3,l=FUSELAGE_L/2, anchor=BACK);
         // cockpit (round front and rear to ease bribging)
-        right(FUSELAGE_L*.1) cuboid([FUSELAGE_L*.4,fuselage_h*.65,FUSELAGE_W*.8], rounding=fuselage_h*.325, edges=[LEFT, RIGHT], anchor=LEFT);
+        back(FUSELAGE_L*.1) cuboid([FUSELAGE_W*.8,FUSELAGE_L*.4,fuselage_h*.65], rounding=fuselage_h*.325, edges=[FRONT,BACK], anchor=FWD);
     }
-    // launch lugs
 }
 
 module hatch_mask(shrink=0) {
-    right(HATCH_F+shrink)
-        cuboid([HATCH_L-shrink*2,fuselage_h,FUSELAGE_W*.7-shrink*2], rounding=FUSELAGE_W*.1+shrink, anchor=LEFT+FRONT);
+    back(HATCH_F+shrink)
+        cuboid([FUSELAGE_W*.7-shrink*2,HATCH_L-shrink*2,fuselage_h], rounding=FUSELAGE_W*.1+shrink, anchor=FWD+DOWN);
 }
 
 module fuselage() {
@@ -87,13 +91,13 @@ module hatch() {
 }
 
 module cut() {
-    cube([.1,fuselage_h*2,FUSELAGE_W*2], anchor=CENTER);
+    cube([FUSELAGE_W*2, .1, fuselage_h*2], anchor=CENTER);
 }
 
 difference() {
     fuselage();
-    right(HATCH_F+HATCH_L+10) cut();  // aft of hatch
-    right(SPAR_C-SPAR_D) cut();  // fwd of carrythrough
-    right(SPAR_C+SPAR_D) cut();  // aft of carrythrough
+    back(HATCH_F+HATCH_L+10) cut();  // aft of hatch
+    back(SPAR_C-SPAR_D) cut();  // fwd of carrythrough
+    back(SPAR_C+SPAR_D) cut();  // aft of carrythrough
 }
-back(0) hatch();
+up(0) hatch();
