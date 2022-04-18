@@ -1,6 +1,6 @@
 // fc_mount-sample.scad: example using flight controller mount
 
-include <fc_mount.scad>
+include <../fc_mount.scad>
 
 difference() {
     cube([60,40,3], anchor=CENTER+TOP);

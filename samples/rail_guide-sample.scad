@@ -1,6 +1,6 @@
 
 include <BOSL2/std.scad>
-use <rail_guides.scad>
+use <../rail_guides.scad>
 
 $fn=64;
 
