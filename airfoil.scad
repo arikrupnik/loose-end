@@ -37,9 +37,8 @@ module airfoil_poly (c = 100, naca = 0015) {
      [for (i = [0:res:c]) let (x = camber_x(i,c,t,m,p), y = camber_y(i,c,t,m,p) ) [x,y]] ;
     
     points_l = ( m == 0 || p == 0) ?
-     [for (i = [c:-1*res:0]) let (x = i, y = foil_y(i,c,t) * -1 ) [x,y]] :
-     [for (i = [c:-1*res:0]) let (x = camber_x(i,c,t,m,p,upper=false), y = camber_y(i,c,t,m,p, upper=false) ) [x,y]] ;    
- 
+     [for (i = [c:-1*res:0]) let (x = max(i,0), y = foil_y(max(i,0),c,t) * -1 ) [x,y]] :
+     [for (i = [c:-1*res:0]) let (x = camber_x(max(i,0),c,t,m,p,upper=false), y = camber_y(max(i,0),c,t,m,p, upper=false) ) [x,y]] ;    
    polygon(concat(points_u,points_l)); //draw poly
 }
 
