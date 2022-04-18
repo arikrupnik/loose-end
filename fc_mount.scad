@@ -12,7 +12,7 @@ module fc_mount() {
             zcyl(0.7, d=3.1, anchor=CENTER+TOP);                // recess for M3 standoff
             zcyl(2, d=2, anchor=CENTER+TOP);                    // hole for screw
             down(1) zcyl(0.6, d2=2, d1=2.8, anchor=CENTER+TOP); // chamfer for screwhead
-            down(1.6) zcyl(10, d=2.8, anchor=CENTER+TOP);       // hole for screwhead
+            down(1.6) zcyl(100, d=2.8, anchor=CENTER+TOP);      // hole for screwhead
         }
     }
 }
