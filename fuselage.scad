@@ -48,17 +48,15 @@ module fuselage_seamless() {
     back(FUSELAGE_L*.35) down(cockpit_h/2) fc_mount();
     // servo wire channels
     xflip_copy()
-      right(FUSELAGE_W*.3)
+      right((FUSELAGE_W-MMT_OD)/2)
         back(FUSELAGE_L - ROOT_CHORD +  SERVO_WIRE_TUNNEL_EXIT) {
+          // longitudinal
           ycyl(l=FUSELAGE_L*.3, d=SERVO_WIRE_TUNNEL_D, anchor=BACK);
+          // transverse: exit
           xcyl(l=FUSELAGE_W*.4, d=SERVO_WIRE_TUNNEL_D, anchor=LEFT+BACK);
+          // igniter wire (spring) exit
+          xrot(25) ycyl(l=FUSELAGE_L*.1, d=4.75, anchor=FORWARD+DOWN);
         }
-    // igniter wire channels
-    xflip_copy()
-      right(FUSELAGE_W*.15)
-        up(FUSELAGE_H*.21)
-          back(FUSELAGE_L)
-            ycyl(l=FUSELAGE_L*.7, d=2, anchor=BACK);
   }
 }
 
