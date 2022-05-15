@@ -75,6 +75,7 @@ module fin_outline() {
 }
 
 echo(str("root chord: ", ROOT_CHORD, "mm; tip chrod: ", TIP_CHORD, "mm; half-span: ", PANEL_SPAN, "mm; spar diameter: ", SPAR_D, "mm; spar center from root LE: ", SPAR_C-(FUSELAGE_L-ROOT_CHORD), "mm"));
+echo(str("fuselage-length: ", FUSELAGE_L, "; width: ", FUSELAGE_W));
 
 fuselage_cross_section = FUSELAGE_W*FUSELAGE_H;
 wing_cross_section = (ROOT_CHORD*af_thickness(WING_AIRFOIL)+TIP_CHORD*af_thickness(WING_AIRFOIL)) * PANEL_SPAN;
