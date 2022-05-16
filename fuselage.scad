@@ -38,8 +38,13 @@ module fuselage_seamless() {
       right(FUSELAGE_W/2)
         back(FUSELAGE_L)
           ycyl(d=.3,l=ROOT_CHORD, anchor=BACK);
+    // pitot tube
+    union() {
+      ycyl(l=PITOT_TUBE_L, d=PITOT_TUBE_D, anchor=FRONT);
+      back(PITOT_TUBE_L - PITOT_TUBE_D/2) ycyl(l=20, d=PITOT_TUBE_D*2, rounding=PITOT_TUBE_D, anchor=FRONT);
+    }
     // cockpit (chamfer front and rear to ease bribging)
-    back(FUSELAGE_L*.1)
+    back(PITOT_TUBE_L)  // far enough forward to meet pitot tube
       cuboid([FUSELAGE_W*.8,FUSELAGE_L*.4,cockpit_h],
              chamfer=cockpit_h/2,
              edges=[FRONT,BACK],

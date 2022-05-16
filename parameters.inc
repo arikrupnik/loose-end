@@ -10,6 +10,9 @@ SPAR_D = 6;               // actual diameter of wing spar
 FUSELAGE_THICKNESS = .14; // fuselage shape (implies 0 camber)
 WING_AIRFOIL=0014;        // wing section
 
+PITOT_TUBE_D = 4.2;       // pitot tube diameter
+PITOT_TUBE_L = 35;        // part of pitot tube that can embed in solid fuselage
+
 // derived dimensions: fuselage
 FUSELAGE_W = MOTOR_D*3;  // print volume on MK3S: 250mm
 FUSELAGE_L = MOTOR_D*20;
