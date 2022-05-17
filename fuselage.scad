@@ -93,8 +93,8 @@ module fuselage() {
         hatch_mask();
     }
     // hatch lips
-    up(cockpit_h/2) back(HATCH_F) cube([HATCH_W, 10, 1], anchor=TOP);
-    up(cockpit_h/2) back(HATCH_F+HATCH_L) cube([HATCH_W, 10, 1], anchor=TOP);
+    up(cockpit_h/2) back(HATCH_F) cube([FUSELAGE_W, 10, 1], anchor=TOP);
+    up(cockpit_h/2) back(HATCH_F+HATCH_L) cube([FUSELAGE_W, 10, 1], anchor=TOP);
 }
 
 module hatch() {
