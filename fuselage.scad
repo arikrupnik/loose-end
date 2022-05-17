@@ -4,6 +4,7 @@ include <airfoil.scad>
 include <BOSL2/std.scad>
 use <rail_guides.scad>
 use <fc_mount.scad>
+use <latch.scad>
 include <parameters.inc>
 
 // fuselage before cutouts
@@ -62,6 +63,8 @@ module fuselage_seamless() {
           // igniter wire (spring) exit
           xrot(25) ycyl(l=FUSELAGE_L*.1, d=4.75, anchor=FORWARD+DOWN);
         }
+    // cockpit hatch latch
+    back(HATCH_F + HATCH_L) up(cockpit_h/2 + 10) latch();
   }
 }
 
