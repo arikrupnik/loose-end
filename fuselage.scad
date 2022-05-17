@@ -69,18 +69,19 @@ module fuselage_seamless() {
 }
 
 module hatch_mask(gap=0) {
-  tr_h = HATCH_L * .15;
+  trapeze_h = HATCH_L * .2;
+  trapeze_top = 2;
   back(HATCH_F) {
     linear_extrude(FUSELAGE_H)
-      round2d(r=FUSELAGE_W*.1) {
+      round2d(r=FUSELAGE_W*.03) {
         difference() {
           union() {
-            back(tr_h) square([HATCH_W, HATCH_L-tr_h], anchor=FWD);
-            trapezoid(h=tr_h, w1=10, w2=HATCH_W, anchor=FWD);
+            back(trapeze_h) square([HATCH_W, HATCH_L-trapeze_h], anchor=FWD);
+            trapezoid(h=trapeze_h, w1=trapeze_top, w2=HATCH_W, anchor=FWD);
           }
           shell2d(-gap) {
-            back(tr_h) square([HATCH_W, HATCH_L-tr_h], anchor=FWD);
-            trapezoid(h=tr_h, w1=10, w2=HATCH_W, anchor=FWD);
+            back(trapeze_h) square([HATCH_W, HATCH_L-trapeze_h], anchor=FWD);
+            trapezoid(h=trapeze_h, w1=trapeze_top, w2=HATCH_W, anchor=FWD);
           }
         }
     }
