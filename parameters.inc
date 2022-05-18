@@ -10,6 +10,7 @@ SPAR_D = 6;               // actual diameter of wing spar
 FUSELAGE_THICKNESS = .14; // fuselage shape (implies 0 camber)
 WING_AIRFOIL=0014;        // wing section
 
+// pitot tube
 PITOT_TUBE_D = 4.2;       // pitot tube diameter
 PITOT_TUBE_L = 35;        // part of pitot tube that can embed in solid fuselage
 
@@ -37,3 +38,6 @@ SPAR_C      = FUSELAGE_L - ROOT_CHORD + SPAR_C_ROOT;  // relative to fuselage LE
 // servo wire tunnels
 SERVO_WIRE_TUNNEL_D = 12;
 SERVO_WIRE_TUNNEL_EXIT = ROOT_CHORD*.5; // relative to root LE
+
+// scribe lines
+SCRIBE_LINE_W = .3;  // stroke width

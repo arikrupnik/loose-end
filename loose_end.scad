@@ -25,13 +25,19 @@ difference() {
   fuselage();
   // CG marks
   for(cg=[.15,.2,.25]) {
-    zflip_copy() {
-      // position in mm from fuselage LE
-      cg_p = mac_setback(wing_panels) + mac_length(wing_panels)*cg;
-      // top of fuselage in this position
-      up(foil_y(cg_p, FUSELAGE_L, FUSELAGE_THICKNESS))
-        back(cg_p)
-          xcyl(d=.3,l=FUSELAGE_W, anchor=CENTER);
+    // position in mm from fuselage LE
+    cg_p = mac_setback(wing_panels) + mac_length(wing_panels)*cg;
+    // top of fuselage in this position
+    fuse_h = foil_y(cg_p, FUSELAGE_L, FUSELAGE_THICKNESS);
+    back(cg_p) {
+    // top & bottom
+    zflip_copy()
+      up(fuse_h)
+        xcyl(d=SCRIBE_LINE_W,l=FUSELAGE_W, anchor=CENTER);
+    // fuselage sides
+    xflip_copy()
+      right(FUSELAGE_W/2)
+        zcyl(d=SCRIBE_LINE_W,l=fuse_h*2, anchor=CENTER);
     }
   }
   // partitioning

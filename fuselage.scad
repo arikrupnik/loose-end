@@ -38,7 +38,7 @@ module fuselage_seamless() {
     xflip_copy()
       right(FUSELAGE_W/2)
         back(FUSELAGE_L)
-          ycyl(d=.3,l=ROOT_CHORD, anchor=BACK);
+          ycyl(d=SCRIBE_LINE_W,l=ROOT_CHORD+5, anchor=BACK);
     // pitot tube
     union() {
       ycyl(l=PITOT_TUBE_L, d=PITOT_TUBE_D, anchor=FRONT);
