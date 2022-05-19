@@ -82,11 +82,13 @@ module hatch_mask(gap=0) {
   }
 }
 
-module hatch_lips() {
+module hatch_lips(gap=0) {
+  width = 10;
+  thickness = .8;
   // fwd lip
-  up(cockpit_h/2) back(HATCH_F) cube([FUSELAGE_W, 10, .8], anchor=BOTTOM);
+  up(cockpit_h/2) back(HATCH_F) cube([FUSELAGE_W, width-gap, thickness], anchor=BOTTOM);
   // aft shelf - note no gap, hatch lies on top of shelf
-  up(cockpit_h/2) back(HATCH_F+HATCH_L) cube([FUSELAGE_W, 10, .8], anchor=BOTTOM);
+  up(cockpit_h/2) back(HATCH_F+HATCH_L) cube([FUSELAGE_W, width-gap, thickness], anchor=BOTTOM);
 }
 
 module fuselage() {
@@ -94,7 +96,7 @@ module fuselage() {
     fuselage_seamless();
       hatch_mask();
   }
-  hatch_lips();
+  hatch_lips(.5);
 }
 
 module hatch() {
