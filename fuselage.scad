@@ -5,6 +5,7 @@ include <BOSL2/std.scad>
 use <rail_guides.scad>
 use <fc_mount.scad>
 use <latch.scad>
+use <wing-tang.scad>
 include <parameters.inc>
 
 // fuselage before cutouts
@@ -58,7 +59,7 @@ module fuselage_seamless() {
     back(FUSELAGE_L*.35) down(cockpit_h/2) fc_mount();
     // servo wire channels
     xflip_copy()
-      right((FUSELAGE_W-MMT_OD)/2)
+      right((MMT_OD+SERVO_WIRE_TUNNEL_D)/2 + EXTRUSION_W)
         back(FUSELAGE_L - ROOT_CHORD +  SERVO_WIRE_TUNNEL_EXIT) {
           // longitudinal
           ycyl(l=FUSELAGE_L*.3, d=SERVO_WIRE_TUNNEL_D, anchor=BACK);
@@ -67,6 +68,12 @@ module fuselage_seamless() {
           // igniter wire (spring) exit
           xrot(25) ycyl(l=FUSELAGE_L*.1, d=4.75, anchor=FORWARD+DOWN);
         }
+    // wing tang pockets with screw holes
+    xflip_copy()
+      right(FUSELAGE_W/2)
+        for(p=WING_TANGS)
+          back(FUSELAGE_L - ROOT_CHORD + p)
+            tang_pocket(WING_TANG_L, WING_TANG_W, SHEET_THICKNESS, WING_SCREW_D, WING_SCREW_L);
   }
 }
 
@@ -110,7 +117,7 @@ module hatch() {
 }
 
 module fuse_cut(l) {
-  back(l) cube([FUSELAGE_W*2, .1, FUSELAGE_H*2], anchor=CENTER);
+  back(l) cube([FUSELAGE_W*2, CUT_WIDTH, FUSELAGE_H*2], anchor=CENTER);
 }
 
 

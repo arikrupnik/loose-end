@@ -41,14 +41,14 @@ difference() {
     }
   }
   // partitioning
-  fuse_cut(HATCH_F+HATCH_L+10) cut();  // aft of hatch
+  fuse_cut(HATCH_F+HATCH_L+10);  // aft of hatch
   fuse_cut(SPAR_C-SPAR_D);  // fwd of carrythrough
   fuse_cut(SPAR_C+SPAR_D);  // aft of carrythrough  
 }
 
 up(50)  hatch();
 
-// fins with base plate and spar cutout
+// 2D fin with base plate and cutouts for spar, servo wires and attachment tangs
 module fin_outline() {
   difference() {
     round2d(ir=5) {  // stress relief on LE root
@@ -57,15 +57,23 @@ module fin_outline() {
         scale(MOTOR_D)
           polygon([[-5.5,0],[-.5,4],[1,4],[0,0]]);
     }
+    // spar
     right(SPAR_C_ROOT) circle(d=SPAR_D);
+    // servo wire
     right(SERVO_WIRE_TUNNEL_EXIT) circle(d=SERVO_WIRE_TUNNEL_D, anchor=RIGHT);
+    // wing attachment tangs
+    for(p=WING_TANGS)
+      right(p)
+        // gap is different from gaps in 3D tang; contraints are different when cutting sheet stock
+        square([WING_TANG_W+SHEET_THICKNESS, SHEET_THICKNESS+.2], anchor=CENTER);
   }
 }
 
-%xflip_copy()
-  ymove(FUSELAGE_L - ROOT_CHORD) xmove(FUSELAGE_W/2)
+// fins
+xflip_copy()
+  ymove(FUSELAGE_L - ROOT_CHORD) xmove(FUSELAGE_W/2 + CUT_WIDTH)
     yrot(90)
-      linear_extrude(25.4*1/16)
+      linear_extrude(SHEET_THICKNESS)
         zrot(90)
           fin_outline();
 
