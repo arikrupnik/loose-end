@@ -17,7 +17,7 @@ module fuselage_seamless() {
           airfoil_poly(c=FUSELAGE_L, naca=n);
         }
         // front lug
-        back(HATCH_F+HATCH_L-5) up(FUSELAGE_H/2) rail_guide1010(20, FUSELAGE_H/2);
+        back(HATCH_F+HATCH_L) up(FUSELAGE_H/2) rail_guide1010(15, FUSELAGE_H/2);
         // rear lug (front conincides with cut line avoids the need for support)
         rear_lug_s = SPAR_C - SPAR_D;
         rear_lug_e = FUSELAGE_L - THRUST_PLATE_OFFSET;
@@ -50,6 +50,10 @@ module fuselage_seamless() {
              chamfer=cockpit_h/2,
              edges=[FRONT,BACK],
              anchor=FWD);
+    // front latch
+    back(HATCH_F + 3.5) up(cockpit_h/2 + 9) yflip() latch();
+    // rear latch
+    back(HATCH_F + HATCH_L) up(cockpit_h/2 + 10) latch();
     // flight contoller mount
     back(FUSELAGE_L*.35) down(cockpit_h/2) fc_mount();
     // servo wire channels
@@ -63,50 +67,44 @@ module fuselage_seamless() {
           // igniter wire (spring) exit
           xrot(25) ycyl(l=FUSELAGE_L*.1, d=4.75, anchor=FORWARD+DOWN);
         }
-    // cockpit hatch latch
-    back(HATCH_F + HATCH_L) up(cockpit_h/2 + 10) latch();
   }
 }
 
 module hatch_mask(gap=0) {
-  trapeze_h = HATCH_L * .2;
+  trapeze_h = HATCH_L * .15;
   trapeze_top = 2;
   back(HATCH_F) {
     linear_extrude(FUSELAGE_H)
       round2d(r=FUSELAGE_W*.03) {
-        difference() {
-          union() {
-            back(trapeze_h) square([HATCH_W, HATCH_L-trapeze_h], anchor=FWD);
-            trapezoid(h=trapeze_h, w1=trapeze_top, w2=HATCH_W, anchor=FWD);
-          }
-          shell2d(-gap) {
-            back(trapeze_h) square([HATCH_W, HATCH_L-trapeze_h], anchor=FWD);
-            trapezoid(h=trapeze_h, w1=trapeze_top, w2=HATCH_W, anchor=FWD);
-          }
-        }
-    }
+        back(gap) trapezoid(h=trapeze_h, w1=trapeze_top, w2=HATCH_W-gap, anchor=FWD);
+        back(gap+trapeze_h) square([HATCH_W-gap, HATCH_L-trapeze_h-gap*2], anchor=FWD);
+      }
   }
 }
 
+module hatch_lips() {
+  // fwd lip
+  up(cockpit_h/2) back(HATCH_F) cube([FUSELAGE_W, 10, .8], anchor=BOTTOM);
+  // aft shelf - note no gap, hatch lies on top of shelf
+  up(cockpit_h/2) back(HATCH_F+HATCH_L) cube([FUSELAGE_W, 10, .8], anchor=BOTTOM);
+}
+
 module fuselage() {
-    difference() {
-        fuselage_seamless();
-        hatch_mask();
-    }
-    // hatch lips
-    up(cockpit_h/2) back(HATCH_F) cube([FUSELAGE_W, 10, 1], anchor=TOP);
-    up(cockpit_h/2) back(HATCH_F+HATCH_L) cube([FUSELAGE_W, 10, 1], anchor=TOP);
+  difference() {
+    fuselage_seamless();
+      hatch_mask();
+  }
+  hatch_lips();
 }
 
 module hatch() {
+  difference() {
     intersection() {
-        fuselage_seamless();
-        hatch_mask(.1);
-        // round off the rear to ease opening and closing
-        up(foil_y(HATCH_F, FUSELAGE_L, FUSELAGE_THICKNESS))
-          back(HATCH_F)
-            xcyl(l=HATCH_W, r=HATCH_L, $fn=360);
+      fuselage_seamless();
+      hatch_mask(.3);
     }
+    hatch_lips();
+  }
 }
 
 module fuse_cut(l) {
