@@ -1,6 +1,5 @@
 include <BOSL2/std.scad>
 
-EPSILON = is_undef(EPSILON) ? 0.01 : EPSILON;
 EXTRUSION_W = is_undef(EXTRUSION_W) ? 0.45 : EXTRUSION_W;
 
 // length is the dimension that goes into mating parts

@@ -51,7 +51,5 @@ SERVO_WIRE_TUNNEL_EXIT = ROOT_CHORD*.5; // relative to root LE
 // scribe lines
 SCRIBE_LINE_W = .3;  // stroke width
 
-// interference between parts
-EPSILON = 0.01;
 // smallest gap between parts that a slicer recognizes as separate geometries
 CUT_WIDTH = 0.1;
