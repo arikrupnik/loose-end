@@ -47,16 +47,16 @@ module fuselage_seamless() {
     }
     // cockpit (chamfer front and rear to ease bribging)
     back(PITOT_TUBE_L)  // far enough forward to meet pitot tube
-      cuboid([FUSELAGE_W*.8,FUSELAGE_L*.4,cockpit_h],
-             chamfer=cockpit_h/2,
+      cuboid([FUSELAGE_W*.8,FUSELAGE_L*.4,COCKPIT_H],
+             chamfer=COCKPIT_H/2,
              edges=[FRONT,BACK],
              anchor=FWD);
     // front latch
-    back(HATCH_F + 3.5) up(cockpit_h/2 + 9) yflip() latch();
+    back(HATCH_F + 3.5) up(COCKPIT_H/2 + 10) yflip() latch();
     // rear latch
-    back(HATCH_F + HATCH_L) up(cockpit_h/2 + 10) latch();
+    back(HATCH_F + HATCH_L) up(COCKPIT_H/2 + 10) latch();
     // flight contoller mount
-    back(FUSELAGE_L*.35) down(cockpit_h/2) fc_mount();
+    back(FUSELAGE_L*.35) down(COCKPIT_H/2) fc_mount();
     // servo wire channels
     xflip_copy()
       right((MMT_OD+SERVO_WIRE_TUNNEL_D)/2 + EXTRUSION_W)
@@ -93,9 +93,9 @@ module hatch_lips(gap=0) {
   width = 10;
   thickness = .8;
   // fwd lip
-  up(cockpit_h/2) back(HATCH_F) cube([FUSELAGE_W, width-gap, thickness], anchor=BOTTOM);
+  up(COCKPIT_H/2) back(HATCH_F) cube([FUSELAGE_W, width-gap, thickness], anchor=BOTTOM);
   // aft shelf - note no gap, hatch lies on top of shelf
-  up(cockpit_h/2) back(HATCH_F+HATCH_L) cube([FUSELAGE_W, width-gap, thickness], anchor=BOTTOM);
+  up(COCKPIT_H/2) back(HATCH_F+HATCH_L) cube([FUSELAGE_W, width-gap, thickness], anchor=BOTTOM);
 }
 
 module fuselage() {

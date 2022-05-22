@@ -22,7 +22,7 @@ FUSELAGE_L = MOTOR_D*20;
 FUSELAGE_H = FUSELAGE_L*FUSELAGE_THICKNESS;
 THRUST_PLATE_OFFSET = FUSELAGE_L*.18;  // how far forward motor thust plate is of trailing edge
 // cockpit & hatch
-cockpit_h=FUSELAGE_H*.65;
+COCKPIT_H=FUSELAGE_H*.6;
 HATCH_F = FUSELAGE_L*.15;  // front
 HATCH_L = FUSELAGE_L*.25;  // length
 HATCH_W = FUSELAGE_W*.7;   // width
