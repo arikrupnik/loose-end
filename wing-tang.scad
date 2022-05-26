@@ -18,7 +18,7 @@ module tang_pocket(length, width, thickness, screw_d, screw_l) {
   screw_tap_d = screw_d*.85;
   
   // tang cutout
-  tang_gap = .2;
+  tang_gap = .3; // .2 tight .3 loose for PLA tangs
   wing_tang(length, width, thickness, screw_d, tang_gap);
 
   // screw holes and screw blocks
@@ -34,7 +34,7 @@ module tang_pocket(length, width, thickness, screw_d, screw_l) {
       zflip_copy()
         up(z)
           left(EXTRUSION_W)
-            cube([length/2-EXTRUSION_W*2, width+EXTRUSION_W*2, rib_gap], anchor=CENTER);
+            cube([length/2-EXTRUSION_W*3, width+EXTRUSION_W*2, rib_gap], anchor=CENTER);
   }
 }
 
