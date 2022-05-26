@@ -52,22 +52,32 @@ module fuselage_seamless() {
              edges=[FRONT,BACK],
              anchor=FWD);
     // front latch
-    back(HATCH_F + 3.5) up(COCKPIT_H/2 + 10) yflip() latch();
+    back(HATCH_F + 3.5) up(COCKPIT_H/2 + 8) yflip() latch();
     // rear latch
     back(HATCH_F + HATCH_L) up(COCKPIT_H/2 + 10) latch();
     // flight contoller mount
     back(FUSELAGE_L*.35) down(COCKPIT_H/2) fc_mount();
+
     // servo wire channels
+    tunnel_x_start = (MMT_OD+SERVO_WIRE_TUNNEL_D)/2 + EXTRUSION_W;
+    tunnel_y_start = HATCH_F+HATCH_L;
+    tunnel_x_exit = FUSELAGE_W/2;
+    tunnel_y_exit = FUSELAGE_L - ROOT_CHORD + SERVO_WIRE_TUNNEL_EXIT;
+    tunnel_x_l = (tunnel_x_exit - tunnel_x_start)/1.4;
+    tunnel_path = [[tunnel_x_start, tunnel_y_start],
+                   [tunnel_x_start, tunnel_y_exit-tunnel_x_l],
+                   [tunnel_x_start+tunnel_x_l, tunnel_y_exit],
+                   [tunnel_x_exit+.1,  tunnel_y_exit]
+                   ];
     xflip_copy()
-      right((MMT_OD+SERVO_WIRE_TUNNEL_D)/2 + EXTRUSION_W)
-        back(FUSELAGE_L - ROOT_CHORD +  SERVO_WIRE_TUNNEL_EXIT) {
-          // longitudinal
-          ycyl(l=FUSELAGE_L*.3, d=SERVO_WIRE_TUNNEL_D, anchor=BACK);
-          // transverse: exit
-          xcyl(l=FUSELAGE_W*.4, d=SERVO_WIRE_TUNNEL_D, anchor=LEFT+BACK);
-          // igniter wire (spring) exit
-          xrot(25) ycyl(l=FUSELAGE_L*.1, d=4.75, anchor=FORWARD+DOWN);
-        }
+      path_extrude2d(tunnel_path)
+        circle(d=SERVO_WIRE_TUNNEL_D);
+    // igniter wire (spring) channels
+    xflip_copy()
+      right(tunnel_x_start)
+        back(tunnel_y_exit-tunnel_x_l)
+          xrot(10)
+            ycyl(l=FUSELAGE_L*.25, d=4.7, anchor=FWD+DOWN);
     // wing tang pockets with screw holes
     xflip_copy()
       right(FUSELAGE_W/2)
