@@ -43,24 +43,23 @@ difference() {
   // partitioning
   fuse_cut(HATCH_F+HATCH_L+10);  // aft of hatch
   fuse_cut(SPAR_C-SPAR_D);  // fwd of carrythrough
-  fuse_cut(SPAR_C+SPAR_D);  // aft of carrythrough  
+  //fuse_cut(SPAR_C+SPAR_D);  // aft of carrythrough
 }
 
 up(50)  hatch();
 
-// 2D fin with base plate and cutouts for spar, servo wires and attachment tangs
-module fin_outline() {
+// 2D root rib with cutouts for spar, servo wires and attachment tangs and optional children
+module root_rib() {
   difference() {
     round2d(ir=5) {  // stress relief on LE root
       airfoil_poly(c=ROOT_CHORD, naca=WING_AIRFOIL);
       right(ROOT_CHORD)
-        scale(MOTOR_D)
-          polygon([[-5.5,0],[-.5,4],[1,4],[0,0]]);
+        children();
     }
     // spar
     right(SPAR_C_ROOT) circle(d=SPAR_D);
     // servo wire
-    right(SERVO_WIRE_TUNNEL_EXIT) circle(d=SERVO_WIRE_TUNNEL_D, anchor=RIGHT);
+    right(SERVO_WIRE_TUNNEL_EXIT) circle(d=SERVO_WIRE_TUNNEL_D);
     // wing attachment tangs
     for(p=WING_TANGS)
       right(p)
@@ -69,8 +68,16 @@ module fin_outline() {
   }
 }
 
+// 2D fin on root rib
+module fin_outline() {
+  root_rib() {
+    scale(MOTOR_D)
+      polygon([[-5.5,0],[-.5,4],[1,4],[0,0]]);
+  }
+}
+
 // fins
-xflip_copy()
+%xflip_copy()
   ymove(FUSELAGE_L - ROOT_CHORD) xmove(FUSELAGE_W/2 + CUT_WIDTH)
     yrot(90)
       linear_extrude(SHEET_THICKNESS)
@@ -88,6 +95,7 @@ xflip_copy()
   }
 }
 
+// print measurements
 echo(str("root chord: ", ROOT_CHORD, "mm; tip chrod: ", TIP_CHORD, "mm; half-span: ", PANEL_SPAN, "mm; spar diameter: ", SPAR_D, "mm; spar center from root LE: ", SPAR_C-(FUSELAGE_L-ROOT_CHORD), "mm"));
 echo(str("fuselage-length: ", FUSELAGE_L, "; width: ", FUSELAGE_W));
 
