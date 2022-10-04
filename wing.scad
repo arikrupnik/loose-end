@@ -1,10 +1,12 @@
 // wing.scad: wing panels with sweep and taper from airfiol
+// front-most point of leading edge aligns with Y=0
 
 include <BOSL2/std.scad>
 include <airfoil.scad>
 
-// aligns front-most point of leading edge with Y=0
-module wing(root_cord, tip_cord, le_sweep, panel_span, af) {
+
+// outer skin of a wing panel
+module wing_envelope(root_cord, tip_cord, le_sweep, panel_span, af) {
   d = le_sweep / (1-tip_cord/root_cord);
   back(d)  // align leading edge with 0
     yrot(90)
@@ -13,6 +15,17 @@ module wing(root_cord, tip_cord, le_sweep, panel_span, af) {
           zrot(90) // align airfoil with y axis
             airfoil_poly(c=root_cord, naca=af);
 }
+
+// wing panel with optional spar cutout
+module wing(root_cord, tip_cord, le_sweep, panel_span, af, spar_c, spar_d) {
+  difference() {
+    wing_envelope(root_cord, tip_cord, le_sweep, panel_span, af);
+    if (spar_d)
+      back(spar_c)
+        xcyl(d=spar_d, l=panel_span, anchor=LEFT);
+   }
+}
+
 
 function af_thickness(af) = (af % 100) / 100;
 

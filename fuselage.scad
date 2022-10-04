@@ -8,8 +8,8 @@ use <latch.scad>
 use <wing-tang.scad>
 include <parameters.inc>
 
-// fuselage before cutouts
-module fuselage_seamless() {
+// fuselage before cutouts; cg_marks: list of CG marks, as distances in mm from fuselage LE
+module fuselage_seamless(cg_marks) {
   difference() {
     union() {
         // main outside shape
@@ -40,6 +40,21 @@ module fuselage_seamless() {
       right(FUSELAGE_W/2)
         back(FUSELAGE_L)
           ycyl(d=SCRIBE_LINE_W,l=ROOT_CHORD+5, anchor=BACK);
+    // CG marks
+    for(cg_p=cg_marks) {
+      // top of fuselage in this position
+      fuse_h = foil_y(cg_p, FUSELAGE_L, FUSELAGE_THICKNESS);
+      back(cg_p) {
+        // top & bottom
+        zflip_copy()
+          up(fuse_h)
+            xcyl(d=SCRIBE_LINE_W,l=FUSELAGE_W, anchor=CENTER);
+        // fuselage sides
+        xflip_copy()
+          right(FUSELAGE_W/2)
+            zcyl(d=SCRIBE_LINE_W,l=fuse_h*2, anchor=CENTER);
+      }
+    }
     // pitot tube
     union() {
       ycyl(l=PITOT_TUBE_L, d=PITOT_TUBE_D, anchor=FRONT);
@@ -84,6 +99,9 @@ module fuselage_seamless() {
         for(p=WING_TANGS)
           back(FUSELAGE_L - ROOT_CHORD + p)
             tang_pocket(WING_TANG_L, WING_TANG_W, SHEET_THICKNESS, WING_SCREW_D, WING_SCREW_L);
+    // partitioning
+    for(p=FUSELAGE_PARTITIONS)
+      fuse_cut(p);
   }
 }
 
@@ -108,18 +126,18 @@ module hatch_lips(gap=0) {
   up(COCKPIT_H/2) back(HATCH_F+HATCH_L) cube([FUSELAGE_W, width-gap, thickness], anchor=BOTTOM);
 }
 
-module fuselage() {
+module fuselage(cg_marks=[]) {
   difference() {
-    fuselage_seamless();
+    fuselage_seamless(cg_marks);
       hatch_mask();
   }
   hatch_lips(.5);
 }
 
-module hatch() {
+module hatch(cg_marks=[]) {
   difference() {
     intersection() {
-      fuselage_seamless();
+      fuselage_seamless(cg_marks);
       hatch_mask(.3);
     }
     hatch_lips();

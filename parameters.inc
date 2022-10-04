@@ -48,8 +48,23 @@ WING_TANGS   = [for (p=[.1, .7]) ROOT_CHORD*p]; // wing attachment points, relat
 SERVO_WIRE_TUNNEL_D = 12;
 SERVO_WIRE_TUNNEL_EXIT = ROOT_CHORD*.5; // relative to root LE
 
+// wing + fuselage geometry for CG calculations
+WING_PANELS=[[FUSELAGE_L, 0,
+              FUSELAGE_L, 0,
+              FUSELAGE_W/2],
+             [ROOT_CHORD, FUSELAGE_L-ROOT_CHORD,
+              TIP_CHORD,  FUSELAGE_L-ROOT_CHORD+LE_SWEEP,
+              PANEL_SPAN]];
+
+
 // scribe lines
 SCRIBE_LINE_W = .3;  // stroke width
 
 // smallest gap between parts that a slicer recognizes as separate geometries
 CUT_WIDTH = 0.1;
+
+// fuselage partitioning to fit in printer
+FUSELAGE_PARTITIONS = [HATCH_F+HATCH_L+10,  // aft of hatch
+                       SPAR_C-SPAR_D        // fwd of carrythrough
+                       //,SPAR_C+SPAR_D        // aft of carrythrough
+                       ];

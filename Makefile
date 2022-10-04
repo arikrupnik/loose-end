@@ -11,8 +11,23 @@ BUILD_DIR = /tmp
 %.stl: %.scad
 	openscad -o ${BUILD_DIR}/$@ $<
 
-fin.dxf:
-	openscad -o ${BUILD_DIR}/$@ fin-projection.scad
+%-fuselage.stl: %.scad
+	openscad -o ${BUILD_DIR}/$@ -Doutput=\"fuselage\" $<
+
+%-hatch.stl: %.scad
+	openscad -o ${BUILD_DIR}/$@ -Doutput=\"hatch\" $<
+
+%-fin.stl: %.scad
+	openscad -o ${BUILD_DIR}/$@ -Doutput=\"fin\" $<
+
+%-rib-template.stl: %.scad
+	openscad -o ${BUILD_DIR}/$@ -Doutput=\"rib-template\" $<
+
+%-flat-parts-mm.dxf: %.scad
+	openscad -o ${BUILD_DIR}/$@ -Doutput=\"flat-parts\" -Dunits=\"mm\" $<
+
+%-flat-parts-inch.dxf: %.scad
+	openscad -o ${BUILD_DIR}/$@ -Doutput=\"flat-parts\" -Dunits=\"inch\" $<
 
 clean:
-	rm -f *stl *dxf *html
+	rm -f ${BUILD_DIR}/*stl ${BUILD_DIR}/*dxf #${BUILD_DIR}/*html
