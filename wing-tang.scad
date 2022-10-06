@@ -24,7 +24,8 @@ module tang_pocket(length, width, thickness, screw_d, screw_l) {
   // screw holes and screw blocks
   left(length/4) {
     // screw hole
-    zcyl(d=screw_tap_d, l=screw_l);
+    // (with additional depth to facilitate tapping without a blind tap)
+    zcyl(d=screw_tap_d, l=screw_l+screw_d*2);
     // screw head hole
     up(screw_l/2-EPSILON) zcyl(d=screw_head_d, l=100, anchor=BOTTOM);
     // screw hole ribs
