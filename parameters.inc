@@ -65,6 +65,6 @@ CUT_WIDTH = 0.1;
 
 // fuselage partitioning to fit in printer
 FUSELAGE_PARTITIONS = [HATCH_F+HATCH_L+10,  // aft of hatch
-                       SPAR_C-SPAR_D        // fwd of carrythrough
-                       //,SPAR_C+SPAR_D        // aft of carrythrough
+                       SPAR_C-SPAR_D,       // fwd of carrythrough
+                       SPAR_C+SPAR_D        // aft of carrythrough
                        ];
