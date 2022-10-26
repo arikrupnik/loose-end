@@ -24,20 +24,14 @@ module fuselage_seamless(cg_marks) {
         rear_lug_e = FUSELAGE_L - THRUST_PLATE_OFFSET;
         rear_lug_l = rear_lug_e - rear_lug_s;
         back(rear_lug_s) up(FUSELAGE_H/2) rail_guide1010(rear_lug_l, FUSELAGE_H/2);
-        // CG marks
+        // CG marks--top and bottom
         for(cg_p=cg_marks) {
           // top of fuselage in this position
           fuse_h = foil_y(cg_p, FUSELAGE_L, FUSELAGE_THICKNESS);
-          back(cg_p) {
-            // top & bottom
+          back(cg_p)
             zflip_copy()
               up(fuse_h)
-              xcyl(d=SCRIBE_LINE_W,l=FUSELAGE_W, anchor=CENTER);
-            // fuselage sides
-            xflip_copy()
-              right(FUSELAGE_W/2)
-              zcyl(d=SCRIBE_LINE_W,l=fuse_h*2, anchor=CENTER);
-          }
+                xcyl(d=SCRIBE_LINE_W,l=FUSELAGE_W, anchor=CENTER);
         }
     }
     // MMT
@@ -55,6 +49,15 @@ module fuselage_seamless(cg_marks) {
       right(FUSELAGE_W/2)
         back(FUSELAGE_L)
           ycyl(d=SCRIBE_LINE_W,l=ROOT_CHORD+5, anchor=BACK);
+    // CG marks--sides of fuselage
+    for(cg_p=cg_marks) {
+      // top of fuselage in this position
+      fuse_h = foil_y(cg_p, FUSELAGE_L, FUSELAGE_THICKNESS);
+      back(cg_p)
+        xflip_copy()
+          right(FUSELAGE_W/2)
+            zcyl(d=SCRIBE_LINE_W,l=fuse_h*2, anchor=CENTER);
+    }
     // pitot tube
     union() {
       ycyl(l=PITOT_TUBE_L, d=PITOT_TUBE_D, anchor=FRONT);
