@@ -12,20 +12,20 @@ include <parameters.inc>
 module fuselage_seamless(cg_marks) {
   difference() {
     union() {
-        // main outside shape
-        rot([90,0,90]) linear_extrude(FUSELAGE_W, center=true) {
-          n = 00*100+FUSELAGE_THICKNESS*100;
-          airfoil_poly(c=FUSELAGE_L, naca=n);
-        }
-        // CG marks--top and bottom
-        for(cg_p=cg_marks) {
-          // top of fuselage in this position
-          fuse_h = foil_y(cg_p, FUSELAGE_L, FUSELAGE_THICKNESS);
-          back(cg_p)
-            zflip_copy()
-              up(fuse_h)
-                xcyl(d=SCRIBE_LINE_W,l=FUSELAGE_W, anchor=CENTER);
-        }
+      // main outside shape
+      rot([90,0,90]) linear_extrude(FUSELAGE_W, center=true) {
+        n = 00*100+FUSELAGE_THICKNESS*100;
+        airfoil_poly(c=FUSELAGE_L, naca=n);
+      }
+      // CG marks--top and bottom
+      for(cg_p=cg_marks) {
+        // top of fuselage in this position
+        fuse_h = foil_y(cg_p, FUSELAGE_L, FUSELAGE_THICKNESS);
+        back(cg_p)
+          zflip_copy()
+            up(fuse_h)
+              xcyl(d=SCRIBE_LINE_W,l=FUSELAGE_W, anchor=CENTER);
+      }
     }
     // MMT
     back(FUSELAGE_L) ycyl(l=FUSELAGE_L*2/3, d=MMT_OD, anchor=BACK);
@@ -54,7 +54,8 @@ module fuselage_seamless(cg_marks) {
     // pitot tube
     union() {
       ycyl(l=PITOT_TUBE_L, d=PITOT_TUBE_D, anchor=FRONT);
-      back(PITOT_TUBE_L - PITOT_TUBE_D/2) ycyl(l=20, d=PITOT_TUBE_D*2, rounding=PITOT_TUBE_D, anchor=FRONT);
+      back(PITOT_TUBE_L - PITOT_TUBE_D/2)
+        ycyl(l=20, d=PITOT_TUBE_D*2, rounding=PITOT_TUBE_D, anchor=FRONT);
     }
     // cockpit (chamfer front and rear to ease bribging)
     back(PITOT_TUBE_L)  // far enough forward to meet pitot tube
@@ -84,8 +85,7 @@ module fuselage_seamless(cg_marks) {
     tunnel_path = [[tunnel_x_start, tunnel_y_start],
                    [tunnel_x_start, tunnel_y_exit-tunnel_x_l],
                    [tunnel_x_start+tunnel_x_l, tunnel_y_exit],
-                   [tunnel_x_exit+.1,  tunnel_y_exit]
-                   ];
+                   [tunnel_x_exit+.1,  tunnel_y_exit]];
     xflip_copy()
       path_extrude2d(tunnel_path)
         circle(d=SERVO_WIRE_TUNNEL_D);
@@ -113,8 +113,10 @@ module hatch_mask(gap=0) {
   back(HATCH_F) {
     linear_extrude(FUSELAGE_H)
       round2d(r=FUSELAGE_W*.03) {
-        back(gap) trapezoid(h=trapeze_h, w1=trapeze_top, w2=HATCH_W-gap, anchor=FWD);
-        back(gap+trapeze_h) square([HATCH_W-gap, HATCH_L-trapeze_h-gap*2], anchor=FWD);
+        back(gap)
+          trapezoid(h=trapeze_h, w1=trapeze_top, w2=HATCH_W-gap, anchor=FWD);
+        back(gap+trapeze_h)
+          square([HATCH_W-gap, HATCH_L-trapeze_h-gap*2], anchor=FWD);
       }
   }
 }
@@ -123,15 +125,19 @@ module hatch_lips(gap=0) {
   width = 10;
   thickness = .8;
   // fwd lip
-  up(COCKPIT_H/2) back(HATCH_F) cube([FUSELAGE_W, width-gap, thickness], anchor=BOTTOM);
+  up(COCKPIT_H/2)
+    back(HATCH_F)
+      cube([FUSELAGE_W, width-gap, thickness], anchor=BOTTOM);
   // aft shelf - note no gap, hatch lies on top of shelf
-  up(COCKPIT_H/2) back(HATCH_F+HATCH_L) cube([FUSELAGE_W, width-gap, thickness], anchor=BOTTOM);
+  up(COCKPIT_H/2)
+    back(HATCH_F+HATCH_L)
+      cube([FUSELAGE_W, width-gap, thickness], anchor=BOTTOM);
 }
 
 module fuselage(cg_marks=[]) {
   difference() {
     fuselage_seamless(cg_marks);
-      hatch_mask();
+    hatch_mask();
   }
   hatch_lips(.5);
 }
@@ -147,7 +153,8 @@ module hatch(cg_marks=[]) {
 }
 
 module fuse_cut(l) {
-  back(l) cube([FUSELAGE_W*2, CUT_WIDTH, FUSELAGE_H*2], anchor=CENTER);
+  back(l)
+    cube([FUSELAGE_W*2, CUT_WIDTH, FUSELAGE_H*2], anchor=CENTER);
 }
 
 
