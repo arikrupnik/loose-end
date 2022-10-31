@@ -17,13 +17,6 @@ module fuselage_seamless(cg_marks) {
           n = 00*100+FUSELAGE_THICKNESS*100;
           airfoil_poly(c=FUSELAGE_L, naca=n);
         }
-        // front lug
-        back(HATCH_F+HATCH_L) up(FUSELAGE_H/2) rail_guide1010(15, FUSELAGE_H/2);
-        // rear lug (front conincides with cut line avoids the need for support)
-        rear_lug_s = SPAR_C - SPAR_D;
-        rear_lug_e = FUSELAGE_L - THRUST_PLATE_OFFSET;
-        rear_lug_l = rear_lug_e - rear_lug_s;
-        back(rear_lug_s) up(FUSELAGE_H/2) rail_guide1010(rear_lug_l, FUSELAGE_H/2);
         // CG marks--top and bottom
         for(cg_p=cg_marks) {
           // top of fuselage in this position
@@ -75,7 +68,13 @@ module fuselage_seamless(cg_marks) {
     back(HATCH_F + HATCH_L) up(COCKPIT_H/2 + 10) latch();
     // flight contoller mount
     back(FUSELAGE_L*.35) down(COCKPIT_H/2) fc_mount();
-
+    // launch rail cutout
+    down(COCKPIT_H/2 + 3)
+      difference() {
+        cuboid([26, FUSELAGE_L, 26], rounding=1, except=[FRONT, BACK], anchor=FWD+TOP);
+        zflip()
+          rail_guide1010(FUSELAGE_L);
+      }
     // servo wire channels
     tunnel_x_start = (MMT_OD+SERVO_WIRE_TUNNEL_D)/2 + EXTRUSION_W;
     tunnel_y_start = HATCH_F+HATCH_L;
