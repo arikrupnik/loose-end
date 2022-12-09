@@ -2,7 +2,7 @@
 
 # The purpose of this file is less for dependency tracking (we're
 # happy to generate each product on each invocation) and more for
-# aiding command-line operatoin.
+# aiding command-line operation.
 
 VPATH = variants:samples
 
