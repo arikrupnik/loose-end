@@ -15,7 +15,7 @@ module wing_tang(length, width, thickness, diameter, gap=0) {
 
 module tang_pocket(length, width, thickness, screw_d, screw_l) {
   screw_head_d = screw_d*2.2;
-  screw_tap_d = screw_d*.85;
+  screw_tap_d = screw_d*.9;
   
   // tang cutout
   tang_gap = .3; // .2 tight .3 loose for PLA tangs
