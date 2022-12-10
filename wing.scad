@@ -6,20 +6,20 @@ include <airfoil.scad>
 
 
 // outer skin of a wing panel
-module wing_envelope(root_cord, tip_cord, le_sweep, panel_span, af) {
-  d = le_sweep / (1-tip_cord/root_cord);
+module wing_envelope(root_chord, tip_chord, le_sweep, panel_span, af) {
+  d = le_sweep / (1-tip_chord/root_chord);
   back(d)  // align leading edge with 0
     yrot(90)
-      linear_extrude(height=panel_span, scale=tip_cord/root_cord)
+      linear_extrude(height=panel_span, scale=tip_chord/root_chord)
         fwd(d)  // align extrusion center with 0
           zrot(90) // align airfoil with y axis
-            airfoil_poly(c=root_cord, naca=af);
+            airfoil_poly(c=root_chord, naca=af);
 }
 
 // wing panel with optional spar cutout
-module wing(root_cord, tip_cord, le_sweep, panel_span, af, spar_c, spar_d) {
+module wing(root_chord, tip_chord, le_sweep, panel_span, af, spar_c, spar_d) {
   difference() {
-    wing_envelope(root_cord, tip_cord, le_sweep, panel_span, af);
+    wing_envelope(root_chord, tip_chord, le_sweep, panel_span, af);
     if (spar_d)
       back(spar_c)
         xcyl(d=spar_d, l=panel_span, anchor=LEFT);
