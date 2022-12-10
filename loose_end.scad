@@ -5,7 +5,6 @@ include <fuselage.scad>
 include <wing.scad>
 include <fins.scad>
 
-$airfoil_fn = 600;
 $fn=64;
 
 // Runtime parameters, mainly for manipulation through the makefile

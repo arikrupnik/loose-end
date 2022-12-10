@@ -1,6 +1,16 @@
 $airfoil_fn = 120;
 $close_airfoils = true;
 
+/* Airfoils have sharper curves on the leading edge than trailing
+   edge. This function produces an alternative spacing, with tighter
+   segments at LE. */
+function exmap(x, xmax, P=2) =
+  // x: between 0..xmax
+  // xmax: chord length
+  // P=1 produces even spacing of segments; the more positive, the
+  // more segments at LE and larger segments at TE
+  pow(x/xmax, P) * xmax;
+
 //https://en.wikipedia.org/wiki/NACA_airfoil
 
   function foil_y(x, c, t) = 
@@ -33,12 +43,12 @@ module airfoil_poly (c = 100, naca = 0015) {
     
   // points have to be generated with or without camber, depending. 
     points_u = ( m == 0 || p == 0) ?
-     [for (i = [0:res:c]) let (x = i, y = foil_y(i,c,t) ) [x,y]] :
-     [for (i = [0:res:c]) let (x = camber_x(i,c,t,m,p), y = camber_y(i,c,t,m,p) ) [x,y]] ;
+     [for (i = [0:res:c]) let (ex = exmap(i,c), y = foil_y(ex,c,t) ) [ex,y]] :
+     [for (i = [0:res:c]) let (ex = exmap(i,c), x = camber_x(ex,c,t,m,p), y = camber_y(ex,c,t,m,p) ) [x,y]] ;
     
     points_l = ( m == 0 || p == 0) ?
-     [for (i = [c:-1*res:0]) let (x = max(i,0), y = foil_y(max(i,0),c,t) * -1 ) [x,y]] :
-     [for (i = [c:-1*res:0]) let (x = camber_x(max(i,0),c,t,m,p,upper=false), y = camber_y(max(i,0),c,t,m,p, upper=false) ) [x,y]] ;    
+     [for (i = [c:-1*res:0]) let (ex = exmap(max(i,0),c), y = foil_y(ex,c,t) * -1 ) [ex,y]] :
+     [for (i = [c:-1*res:0]) let (ex = exmap(max(i,0),c), x = camber_x(ex,c,t,m,p,upper=false), y = camber_y(ex,c,t,m,p, upper=false) ) [x,y]] ;
    polygon(concat(points_u,points_l)); //draw poly
 }
 
