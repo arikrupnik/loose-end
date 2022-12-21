@@ -27,8 +27,6 @@ module wing(root_chord, tip_chord, le_sweep, panel_span, af, spar_c, spar_d) {
 }
 
 
-function af_thickness(af) = (af % 100) / 100;
-
 function mac_length_panel(panel) =
   let(root_chord=panel[0], root_setback=panel[1], tip_chord=panel[2], tip_setback=panel[3])
     let (taper_ratio = tip_chord/root_chord)

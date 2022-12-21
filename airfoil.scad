@@ -13,6 +13,11 @@ function exmap(x, xmax, P=2) =
 
 //https://en.wikipedia.org/wiki/NACA_airfoil
 
+// exmple: 2412 -> .02, .4, .12
+function af_camber(af) = floor(af/1000) / 100;
+function af_max_camber_pos(af) = floor(af/100) % 10 / 10;
+function af_thickness(af) = (af%100) / 100;
+
   function foil_y(x, c, t) = 
 (5*t*c)*( ( 0.2969 * sqrt(x/c) ) - ( 0.1260*(x/c) ) - ( 0.3516*pow((x/c),2) ) + ( 0.2843*pow((x/c),3) ) - ( ( $close_airfoils ? 0.1036 : 0.1015)*pow((x/c),4) ) ); //NACA symetrical airfoil formula
   function camber(x,c,m,p) = ( x <= (p * c) ? 
@@ -37,9 +42,9 @@ module airfoil_poly (c = 100, naca = 0015) {
   $close_airfoils = ($close_airfoils != undef) ? $close_airfoils : false;
   $airfoil_fn = ($airfoil_fn != undef) ? $airfoil_fn : 100;
   res = c/$airfoil_fn; //resolution of foil poly 
-  t = ((naca%100)/100); //establish thickness/length ratio
-  m = ( (floor((((naca-(naca%100))/1000))) /100) );
-  p = ((((naca-(naca%100))/100)%10) / 10);
+  t = af_thickness(naca);
+  m = af_camber(naca);
+  p = af_max_camber_pos(naca);
     
   // points have to be generated with or without camber, depending. 
     points_u = ( m == 0 || p == 0) ?
