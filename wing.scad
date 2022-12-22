@@ -7,13 +7,13 @@ include <airfoil.scad>
 
 // outer skin of a wing panel
 module wing_envelope(root_chord, tip_chord, le_sweep, panel_span, af) {
-  d = le_sweep / (1-tip_chord/root_chord);
-  back(d)  // align leading edge with 0
-    yrot(90)
-      linear_extrude(height=panel_span, scale=tip_chord/root_chord)
-        fwd(d)  // align extrusion center with 0
-          zrot(90) // align airfoil with y axis
-            airfoil(c=root_chord, naca=af);
+  root_rib = airfoil(c=root_chord, naca=af);
+  tip_rib = airfoil(c=tip_chord, naca=af);
+  yrot(90)  // spar along x axis
+    zrot(90)  // root chord on y axis
+      skin([root_rib, right(le_sweep, tip_rib)],
+           slices=0,
+           z=[0,panel_span]);
 }
 
 // wing panel with optional spar cutout
