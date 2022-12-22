@@ -17,13 +17,11 @@ module wing_envelope(root_chord, tip_chord, le_sweep, panel_span, af) {
 }
 
 // wing panel with optional spar cutout
-module wing(root_chord, tip_chord, le_sweep, panel_span, af, spar_c, spar_d) {
+module wing(root_chord, tip_chord, le_sweep, panel_span, af) {
   difference() {
     wing_envelope(root_chord, tip_chord, le_sweep, panel_span, af);
-    if (spar_d)
-      back(spar_c)
-        xcyl(d=spar_d, l=panel_span, anchor=LEFT);
-   }
+    children();
+  }
 }
 
 
