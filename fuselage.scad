@@ -15,7 +15,7 @@ module fuselage_seamless(cg_marks) {
       // main outside shape
       rot([90,0,90]) linear_extrude(FUSELAGE_W, center=true) {
         n = 00*100+FUSELAGE_THICKNESS*100;
-        airfoil_poly(c=FUSELAGE_L, naca=n);
+        airfoil(c=FUSELAGE_L, naca=n);
       }
       // CG marks--top and bottom
       for(cg_p=cg_marks) {

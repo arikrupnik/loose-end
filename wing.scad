@@ -16,7 +16,13 @@ module wing_envelope(root_chord, tip_chord, le_sweep, panel_span, af) {
            z=[0,panel_span]);
 }
 
-// wing panel with optional spar cutout
+// simple, round spar, perpendicular to fuselage
+module spar(root_loc, diameter, length) {
+  back(root_loc)
+    xcyl(d=diameter, l=length, anchor=LEFT);
+}
+
+// wing panel with optional spar cutouts
 module wing(root_chord, tip_chord, le_sweep, panel_span, af) {
   difference() {
     wing_envelope(root_chord, tip_chord, le_sweep, panel_span, af);

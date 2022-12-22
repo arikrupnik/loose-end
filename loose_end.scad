@@ -64,7 +64,8 @@ scale([scale_factor, scale_factor, scale_factor]) {
     %xflip_copy()
        back(FUSELAGE_L-ROOT_CHORD)
          right(FUSELAGE_W/2)
-           wing(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, WING_AIRFOIL, SPAR_C_ROOT, SPAR_D);
+           wing(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, WING_AIRFOIL)
+             spar(SPAR_C_ROOT, SPAR_D, PANEL_SPAN);
 }
 
 module print_measurements() {
