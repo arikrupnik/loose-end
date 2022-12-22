@@ -13,7 +13,7 @@ module wing_envelope(root_chord, tip_chord, le_sweep, panel_span, af) {
       linear_extrude(height=panel_span, scale=tip_chord/root_chord)
         fwd(d)  // align extrusion center with 0
           zrot(90) // align airfoil with y axis
-            airfoil_poly(c=root_chord, naca=af);
+            airfoil(c=root_chord, naca=af);
 }
 
 // wing panel with optional spar cutout

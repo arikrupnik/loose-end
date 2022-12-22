@@ -38,21 +38,24 @@ function af_thickness(af) = (af%100) / 100;
   );
   
   
-module airfoil_poly (c = 100, naca = 0015) {
-  $close_airfoils = ($close_airfoils != undef) ? $close_airfoils : false;
-  $airfoil_fn = ($airfoil_fn != undef) ? $airfoil_fn : 100;
-  res = c/$airfoil_fn; //resolution of foil poly 
-  t = af_thickness(naca);
-  m = af_camber(naca);
-  p = af_max_camber_pos(naca);
-    
-  // points have to be generated with or without camber, depending. 
-    points_u = ( m == 0 || p == 0) ?
-     [for (i = [0:res:c]) let (ex = exmap(i,c), y = foil_y(ex,c,t) ) [ex,y]] :
-     [for (i = [0:res:c]) let (ex = exmap(i,c), x = camber_x(ex,c,t,m,p), y = camber_y(ex,c,t,m,p) ) [x,y]] ;
-    
-    points_l = ( m == 0 || p == 0) ?
-     [for (i = [c:-1*res:0]) let (ex = exmap(max(i,0),c), y = foil_y(ex,c,t) * -1 ) [ex,y]] :
-     [for (i = [c:-1*res:0]) let (ex = exmap(max(i,0),c), x = camber_x(ex,c,t,m,p,upper=false), y = camber_y(ex,c,t,m,p, upper=false) ) [x,y]] ;
-   polygon(concat(points_u,points_l)); //draw poly
+function airfoil(c = 100, naca = 0015) =
+  let($close_airfoils = ($close_airfoils != undef) ? $close_airfoils : false,
+      $airfoil_fn = ($airfoil_fn != undef) ? $airfoil_fn : 100,
+      step = c/$airfoil_fn, // average length of polygon segments
+      t = af_thickness(naca),
+      m = af_camber(naca),
+      p = af_max_camber_pos(naca),
+
+      // points have to be generated with or without camber, depending.
+      points_u = ( m == 0 || p == 0) ?
+        [for (i = [0:step:c]) let (ex = exmap(i,c), y = foil_y(ex,c,t) ) [ex,y]] :
+        [for (i = [0:step:c]) let (ex = exmap(i,c), x = camber_x(ex,c,t,m,p), y = camber_y(ex,c,t,m,p) ) [x,y]],
+
+      points_l = ( m == 0 || p == 0) ?
+        [for (i = [c:-1*step:0]) let (ex = exmap(max(i,0),c), y = foil_y(ex,c,t) * -1 ) [ex,y]] :
+        [for (i = [c:-1*step:0]) let (ex = exmap(max(i,0),c), x = camber_x(ex,c,t,m,p,upper=false), y = camber_y(ex,c,t,m,p, upper=false) ) [x,y]])
+   concat(points_u,points_l);
+
+module airfoil(c = 100, naca = 0015) {
+  polygon(airfoil(c, naca));
 }
