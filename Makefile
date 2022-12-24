@@ -6,28 +6,40 @@
 
 VPATH = variants:samples
 
-BUILD_DIR = /tmp
+SLIC3R = PrusaSlicer-2.5.0+linux-x64-GTK3-202209060725.AppImage
+BASE_INI = slicer-config/base-mk3s-0.15quality-prusamentPLA.ini
+
+.PHONY: clean
+
+# STL from SCAD
 
 %.stl: %.scad
-	openscad -o ${BUILD_DIR}/$@ $<
+	openscad -o $@ $<
 
 %-fuselage.stl: %.scad
-	openscad -o ${BUILD_DIR}/$@ -Doutput=\"fuselage\" $<
+	openscad -o $@ -Doutput=\"fuselage\" $<
 
 %-hatch.stl: %.scad
-	openscad -o ${BUILD_DIR}/$@ -Doutput=\"hatch\" $<
+	openscad -o $@ -Doutput=\"hatch\" $<
 
 %-fin.stl: %.scad
-	openscad -o ${BUILD_DIR}/$@ -Doutput=\"fin\" $<
+	openscad -o $@ -Doutput=\"fin\" $<
 
 %-rib-template.stl: %.scad
-	openscad -o ${BUILD_DIR}/$@ -Doutput=\"rib-template\" $<
+	openscad -o $@ -Doutput=\"rib-template\" $<
 
 %-flat-parts-mm.dxf: %.scad
-	openscad -o ${BUILD_DIR}/$@ -Doutput=\"flat-parts\" -Dunits=\"mm\" $<
+	openscad -o $@ -Doutput=\"flat-parts\" -Dunits=\"mm\" $<
 
 %-flat-parts-inch.dxf: %.scad
-	openscad -o ${BUILD_DIR}/$@ -Doutput=\"flat-parts\" -Dunits=\"inch\" $<
+	openscad -o $@ -Doutput=\"flat-parts\" -Dunits=\"inch\" $<
+
+
+# G-CODE from STL
+
+%.gcode: %.stl
+	${SLIC3R} -g -o $@ --load ${BASE_INI} --load slicer-config/single-wall.ini $<
+
 
 clean:
-	rm -f ${BUILD_DIR}/*stl ${BUILD_DIR}/*dxf #${BUILD_DIR}/*html
+	rm -fv *stl *dxf *gcode
