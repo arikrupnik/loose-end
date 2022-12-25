@@ -9,6 +9,7 @@ $fn=64;
 
 // Runtime parameters, mainly for manipulation through the makefile
 output = undef;
+segment = undef;
 // All dimensions in this project are in mm. Both STL and DXF use
 // implicit units. All STL workflows so far use mm. A vendor that uses
 // DXF requires inch dimensions.
@@ -23,13 +24,25 @@ scale([scale_factor, scale_factor, scale_factor]) {
     mac_setback(WING_PANELS) + mac_length(WING_PANELS)*cg];
 
   // main fuselage
-  if(output==undef || output=="fuselage")
-    fuselage(cg_marks);
+  if(output==undef)
+    difference() {
+      fuselage(cg_marks);
+      fuse_cuts();
+    }
+  else if(output=="fuselage")
+    if(segment)
+      fuselage_segment(cg_marks, segment);
+    else
+      fuselage(cg_marks);
 
   // fuselage hatch
-  if(output==undef || output=="hatch")
+  if(output==undef)
     up(50)
       hatch(cg_marks);
+  else if(output=="hatch")
+    zrot(180)
+      xrot(-90)
+        hatch(cg_marks);
 
   // fins
   if(output==undef)

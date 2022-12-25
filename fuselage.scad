@@ -101,9 +101,6 @@ module fuselage_seamless(cg_marks) {
         for(p=WING_TANGS)
           back(FUSELAGE_L - ROOT_CHORD + p)
             tang_pocket(WING_TANG_L, WING_TANG_W, SHEET_THICKNESS, WING_SCREW_D, WING_SCREW_L);
-    // partitioning
-    for(p=FUSELAGE_PARTITIONS)
-      fuse_cut(p);
   }
 }
 
@@ -152,9 +149,27 @@ module hatch(cg_marks=[]) {
   }
 }
 
-module fuse_cut(l) {
-  back(l)
-    cube([FUSELAGE_W*2, CUT_WIDTH, FUSELAGE_H*2], anchor=CENTER);
+module fuselage_segment(cg_marks, n) {
+  ocuts = concat(0, FUSELAGE_PARTITIONS, FUSELAGE_L);
+  front_y = ocuts[n-1];
+  back_y = ocuts[n];
+  // "Use a number larger than twice your object's largest axis."
+  max_dim = max(FUSELAGE_L, WINGSPAN) * 2;
+  zrot(n==1 ? 180 : 0) {
+    xrot(n==1 ? -90 : 90) {
+      front_half(s=max_dim, y=back_y) {
+        back_half(s=max_dim, y=front_y) {
+          fuselage(cg_marks);
+        }
+      }
+    }
+  }
+}
+
+module fuse_cuts(l) {
+  for(p=FUSELAGE_PARTITIONS)
+    back(p)
+      cube([FUSELAGE_W*2, CUT_WIDTH, FUSELAGE_H*2], anchor=CENTER);
 }
 
 
