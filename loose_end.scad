@@ -2,8 +2,9 @@
 
 include <BOSL2/std.scad>
 include <fuselage.scad>
-include <wing.scad>
+include <mmtbulkhead.scad>
 include <fins.scad>
+include <wing.scad>
 
 $fn=64;
 
@@ -43,6 +44,14 @@ scale([scale_factor, scale_factor, scale_factor]) {
     zrot(180)
       xrot(-90)
         hatch(cg_marks);
+
+  // MMT bulkhead
+  if(output==undef)
+    back(HATCH_F+HATCH_L)
+      xrot(-90)
+        mmtbulkhead();
+  else if(output=="mmtbulkhead")
+    mmtbulkhead();
 
   // fins
   if(output==undef)

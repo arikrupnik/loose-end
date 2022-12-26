@@ -39,6 +39,7 @@ loose_end_rj: \
 	loose_end_rj-fuselage-3.gcode \
 	loose_end_rj-fuselage-4.gcode \
 	loose_end_rj-hatch.gcode \
+	loose_end_rj-mmtbulkhead.gcode \
 	loose_end_rj-flat-parts-mm.dxf
 
 loose_end_24: \
@@ -47,6 +48,7 @@ loose_end_24: \
 	loose_end_24-fuselage-3.gcode \
 	loose_end_24-fuselage-4.gcode \
 	loose_end_24-hatch.gcode \
+	loose_end_24-mmtbulkhead.gcode \
 	loose_end_24-flat-parts-mm.dxf
 
 
@@ -62,13 +64,14 @@ SLICER_BASE_INI = --load slicer-config/base-mk3s-0.15quality-prusamentPLA.ini
 loose_end_rj-fuselage-3.gcode loose_end_24-fuselage-3.gcode : \
 	SLICER_FLAGS = --load slicer-config/spar-carrythrough.ini
 # MMT plugs use different fill pattern
-%-mmtplug.gcode: \
-	SLICER_FLAGS = --load slicer-config/motor-plug.ini
+%-mmtbulkhead.gcode: \
+	SLICER_FLAGS = --load slicer-config/mmtbulkhead.ini
 
 
 # STL from SCAD
 
-%.stl: %.scad  # generic STL recipe
+# generic STL recipe, especially relevant for samples
+%.stl: %.scad
 	openscad -o $@ $<
 
 # common command for stemming

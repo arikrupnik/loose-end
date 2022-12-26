@@ -6,6 +6,7 @@
 MOTOR_D = 24;
 // other dimensions that need explicit vales
 MMT_OD = 25.6;            // actual OD of motor mount
+MMT_ID = 23.7;            // actual ID of motor mount
 SPAR_D = 6;               // actual diameter of wing spar
 FUSELAGE_THICKNESS = .14; // fuselage shape (implies 0 camber)
 WING_AIRFOIL=0014;        // wing section
