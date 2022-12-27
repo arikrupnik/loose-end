@@ -100,10 +100,13 @@ loose_end_24-%.stl: loose_end_24.scad
 
 clean:
 	rm -fv *stl *dxf *gcode
-.PHONY: clean
+.PHONY: clean loose_end_rj loose_end_24
 
 # keep intermediate files (STLs are only intermediate files right now)
 .SECONDARY:
+
+# discard built-in suffix rules
+.SUFFIXES:
 
 
 # Guile code at the bottom of file to preserve font-lock-mode's sanity

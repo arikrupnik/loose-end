@@ -4,11 +4,12 @@ include <../loose_end.scad>
 
 MOTOR_D = 24;
 MMT_OD = 25.6;
+MMT_ID = 23.7;
 SPAR_D = 5.5;
 
-FUSELAGE_THICKNESS = .15;
-WING_AIRFOIL = 0012;
-FUSELAGE_L = MOTOR_D * 18;
+WING_AIRFOIL = 0012;        // actual thickness of RJ wings
+FUSELAGE_L = MOTOR_D * 18;  // shorter fuselage for CG
+FUSELAGE_THICKNESS = .15;   // thicker section to maintain height with shorter fuselage
 
 ROOT_CHORD = 203;
 TIP_CHORD = 93;

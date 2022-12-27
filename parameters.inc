@@ -4,16 +4,19 @@
 
 // nominal motor size; most dimensions depend on this value
 MOTOR_D = 24;
-// other dimensions that need explicit vales
-MMT_OD = 25.6;            // actual OD of motor mount
-MMT_ID = 23.7;            // actual ID of motor mount
-SPAR_D = 6;               // actual diameter of wing spar
+
+// other dimensions that change from one variant to antoher
+// the values here are in the ballpark and work OK for preview
+// variants override these variables with actual dimensions of components
+MMT_OD = MOTOR_D * 1.05;  // varints override with actual OD of motor mount
+MMT_ID = MOTOR_D / 1.01;  // varints override with actual ID of motor mount
+SPAR_D = MOTOR_D / 4;     // varints override with actual diameter of wing spar
+
+// dimensions that need explicit vales but carry from one variant to another
 FUSELAGE_THICKNESS = .14; // fuselage shape (implies 0 camber)
 WING_AIRFOIL=0014;        // wing section
 SHEET_THICKNESS = 1.6;    // 2D parts: fins, wing tangs
 EXTRUSION_W = .45;        // extrusion width
-
-// pitot tube
 PITOT_TUBE_D = 4.2;       // pitot tube diameter
 PITOT_TUBE_L = 35;        // part of pitot tube that can embed in solid fuselage
 
