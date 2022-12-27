@@ -166,7 +166,7 @@ module fuselage_segment(cg_marks, n) {
   }
 }
 
-module fuse_cuts(l) {
+module fuse_cuts() {
   for(p=FUSELAGE_PARTITIONS)
     back(p)
       cube([FUSELAGE_W*2, CUT_WIDTH, FUSELAGE_H*2], anchor=CENTER);
