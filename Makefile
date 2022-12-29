@@ -33,7 +33,7 @@ MAKEFLAGS += -j 8
 # Target sets for each variant
 
 # current development target and default goal
-loose_end_rj: \
+loose_end_rj.zip: \
 	loose_end_rj-fuselage-1.gcode \
         loose_end_rj-fuselage-2.gcode \
 	loose_end_rj-fuselage-3.gcode \
@@ -42,7 +42,7 @@ loose_end_rj: \
 	loose_end_rj-mmtbulkhead.gcode \
 	loose_end_rj-flat-parts-mm.dxf
 
-loose_end_24: \
+loose_end_24.zip: \
 	loose_end_24-fuselage-1.gcode \
         loose_end_24-fuselage-2.gcode \
 	loose_end_24-fuselage-3.gcode \
@@ -95,12 +95,18 @@ loose_end_24-%.stl: loose_end_24.scad
 %.gcode: %.stl
 	${SLICER} -g -o $@ ${SLICER_BASE_INI} ${SLICER_FLAGS} $<
 
+# archiving
+
+%.zip:
+	zip $@ $(foreach g,$(filter %.gcode,$+),$(basename $g).stl) $+
+	cp $@ $*-$(shell git describe --tags --dirty).zip
+
 
 # Housekeeping
 
 clean:
-	rm -fv *stl *dxf *gcode
-.PHONY: clean loose_end_rj loose_end_24
+	rm -fv *stl *dxf *gcode *zip
+.PHONY: clean
 
 # keep intermediate files (STLs are only intermediate files right now)
 .SECONDARY:
@@ -119,7 +125,7 @@ define GUILED
 
 (define param-names '("output" "segment" "side")) ;' segment is numeric
 
-(define param-quotes (list double-quote values double-quote)) ;'
+(define param-quotes (list double-quote values double-quote)) ;
 
 (define (D stem)
   (map (lambda (param-name param-quote value)
