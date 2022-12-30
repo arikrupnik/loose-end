@@ -72,3 +72,6 @@ FUSELAGE_PARTITIONS = [HATCH_F+HATCH_L+10,  // aft of hatch
                        SPAR_C-SPAR_D,       // fwd of carrythrough
                        SPAR_C+SPAR_D        // aft of carrythrough
                        ];
+
+// wing partitions to fit in printer
+WING_PARTITIONS = [PANEL_SPAN/2];  // simply cut into two equal lenghts for smaller models
