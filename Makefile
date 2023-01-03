@@ -6,6 +6,9 @@
 
 VPATH = variants:samples
 
+# asking openscad to generate dependency files as a side effect:
+# http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
+OPENSCAD = openscad -d $@.deps
 SLICER = PrusaSlicer-2.5.0+linux-x64-GTK3-202209060725.AppImage
 
 # it takes over a minute to render each fuselage STL; running jobs in
@@ -75,10 +78,10 @@ loose_end_rj-fuselage-3.gcode loose_end_24-fuselage-3.gcode : \
 
 # generic STL recipe, especially relevant for samples
 %.stl: %.scad
-	openscad -o $@ $<
+	$(OPENSCAD) -o $@ $<
 
 # common command for stemming
-OPENSCAD_STEM_CL=openscad -o $@ $(guile (D "$*")) $<
+OPENSCAD_STEM_CL=$(OPENSCAD) -o $@ $(guile (D "$*")) $<
 
 # repeat for each variant :=(
 loose_end_rj-%.stl: loose_end_rj.scad
@@ -88,14 +91,20 @@ loose_end_24-%.stl: loose_end_24.scad
 
 # DXF from SCAD for CNC cutting
 %-flat-parts-mm.dxf: %.scad
-	openscad -o $@ -Doutput=\"flat-parts\" -Dunits=\"mm\" $<
+	$(OPENSCAD) -o $@ -Doutput=\"flat-parts\" -Dunits=\"mm\" $<
 %-flat-parts-inch.dxf: %.scad
-	openscad -o $@ -Doutput=\"flat-parts\" -Dunits=\"inch\" $<
+	$(OPENSCAD) -o $@ -Doutput=\"flat-parts\" -Dunits=\"inch\" $<
+
+# including available dependency files (comment in OPENSCAD= above)
+include $(wildcard *.deps)
 
 
 # G-CODE from STL
 
-%.gcode: %.stl
+# it's a little lazy to list all slicer config files as dependencies,
+# but slicing is relatively cheap and it avoids cluttering the
+# makefile
+%.gcode: %.stl $(wildcard slicer-config/*ini)
 	${SLICER} -g -o $@ ${SLICER_BASE_INI} ${SLICER_FLAGS} $<
 
 # archiving
@@ -108,7 +117,7 @@ loose_end_24-%.stl: loose_end_24.scad
 # Housekeeping
 
 clean:
-	rm -fv *stl *dxf *gcode *zip
+	rm -fv *stl *dxf *gcode *zip *deps
 .PHONY: clean
 
 # keep intermediate files (STLs are only intermediate files right now)
