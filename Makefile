@@ -60,6 +60,9 @@ SLICER_BASE_INI = --load slicer-config/base-mk3s-0.15quality-prusamentPLA.ini
 # most parts print using this light-weight configuration
 %.gcode: \
 	SLICER_FLAGS = --load slicer-config/single-wall.ini
+# wing uses different infill
+loose_end_24-wing%.gcode: \
+	SLICER_FLAGS = --load slicer-config/single-wall-wing.ini
 # spar carrythroughs need extra structure
 loose_end_rj-fuselage-3.gcode loose_end_24-fuselage-3.gcode : \
 	SLICER_FLAGS = --load slicer-config/spar-carrythrough.ini

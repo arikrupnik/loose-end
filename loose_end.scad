@@ -65,6 +65,23 @@ scale([scale_factor, scale_factor, scale_factor]) {
     linear_extrude(SHEET_THICKNESS)
       fin_outline();
 
+  // wing
+  if(output==undef)
+    xflip_copy()
+      back(FUSELAGE_L-ROOT_CHORD)
+        right(FUSELAGE_W/2)
+          difference() {
+            wing(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, WING_AIRFOIL)
+              spar(SPAR_C_ROOT, SPAR_D, PANEL_SPAN);
+            wing_cuts();
+          }
+  else if(output=="wing")
+    if(segment)
+      wing_segment(segment, side);
+    else
+      wing(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, WING_AIRFOIL)
+        spar(SPAR_C_ROOT, SPAR_D, PANEL_SPAN);
+
   // single-layer template for marking cutouts in foam cores
   if(output=="rib-template")
     linear_extrude(0.2)
@@ -80,14 +97,6 @@ scale([scale_factor, scale_factor, scale_factor]) {
         back(c*WING_TANG_W*1.5)
           wing_tang(WING_TANG_L, WING_TANG_W, SHEET_THICKNESS, WING_SCREW_D);
   }
-
-  // wing
-  if(output==undef)
-    %xflip_copy()
-       back(FUSELAGE_L-ROOT_CHORD)
-         right(FUSELAGE_W/2)
-           wing(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, WING_AIRFOIL)
-             spar(SPAR_C_ROOT, SPAR_D, PANEL_SPAN);
 }
 
 module print_measurements() {
