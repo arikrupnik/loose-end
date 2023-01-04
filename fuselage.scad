@@ -149,6 +149,7 @@ module hatch(cg_marks=[]) {
   }
 }
 
+// individual fuselage segments for printing, in correct printing orientation
 module fuselage_segment(cg_marks, n) {
   ocuts = concat(0, FUSELAGE_PARTITIONS, FUSELAGE_L);
   front_y = ocuts[n-1];
@@ -166,6 +167,7 @@ module fuselage_segment(cg_marks, n) {
   }
 }
 
+// cutter planes to visualize segmentation
 module fuse_cuts() {
   for(p=FUSELAGE_PARTITIONS)
     back(p)
