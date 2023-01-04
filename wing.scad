@@ -9,6 +9,11 @@ include <parameters.inc>
 module wing() {
   trapezoidal_wing(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, WING_AIRFOIL) {
     spar(SPAR_C_ROOT, SPAR_D, PANEL_SPAN);
+    mid_hinge(ROOT_CHORD*(1-ELEVON_CHORD),
+              LE_SWEEP+(TIP_CHORD*(1-ELEVON_CHORD)),
+              ROOT_CHORD * af_thickness(WING_AIRFOIL),
+              .75,
+              PANEL_SPAN);
   }
 }
 

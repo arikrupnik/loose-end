@@ -35,7 +35,8 @@ HATCH_W = FUSELAGE_W*.7;   // width
 WINGSPAN   = MOTOR_D*35;  // constraint: launcher outrigger span is 31"
 ROOT_CHORD = MOTOR_D*10;
 TIP_CHORD  = ROOT_CHORD*.5;
-LE_SWEEP   = ROOT_CHORD-TIP_CHORD;  // straight trailing edge
+ELEVON_CHORD = .1;  // as a fraction of airfoil chord
+LE_SWEEP   = (ROOT_CHORD-TIP_CHORD)*(1-ELEVON_CHORD);  // straight hinge line
 PANEL_SPAN =(WINGSPAN-FUSELAGE_W)/2;
 // wing spar center--close to tip LE
 SPAR_C_ROOT = LE_SWEEP + TIP_CHORD*.1; // relative to root LE
@@ -50,7 +51,7 @@ WING_TANGS   = [for (p=[.1, .7]) ROOT_CHORD*p]; // wing attachment points, relat
 
 // servo wire tunnels
 SERVO_WIRE_TUNNEL_D = 12;
-SERVO_WIRE_TUNNEL_EXIT = ROOT_CHORD*.5; // relative to root LE
+SERVO_WIRE_TUNNEL_EXIT = SPAR_C_ROOT - SPAR_D*3; // ahead of spar and carrythrough partition
 
 // wing + fuselage geometry for CG calculations
 WING_PANELS=[[FUSELAGE_L, 0,

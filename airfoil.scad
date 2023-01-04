@@ -111,6 +111,16 @@ module spar(root_loc, diameter, length) {
     xcyl(d=diameter, l=length, anchor=LEFT);
 }
 
+// hinge in the middle of an airfoil, with equal cutouts top and bottom
+module mid_hinge(root_loc, tip_loc, root_thickness, bridge_thickness, length) {
+  back(root_loc)
+    skew(syx=(tip_loc-root_loc)/length)
+      zflip_copy()
+        xrot(45)
+          zmove(bridge_thickness/2)
+            cube([length, root_thickness, root_thickness]);
+}
+
 
 // functions for computing CG in a multi-trapezoidal wing. `panels' is
 // a list of sub-panels. The first panel (root) has the form
