@@ -8,8 +8,8 @@ include <airfoil.scad>
 
 // outer skin of a wing panel
 module wing_envelope(root_chord, tip_chord, le_sweep, panel_span, af, shave=0) {
-  root_rib = offset(airfoil(c=root_chord, naca=af), delta=-shave, closed=true, same_length=true);
-  tip_rib = offset(airfoil(c=tip_chord, naca=af), delta=-shave, closed=true, same_length=true);
+  root_rib = offset(airfoil(root_chord, af), delta=-shave, closed=true, same_length=true);
+  tip_rib = offset(airfoil(tip_chord, af), delta=-shave, closed=true, same_length=true);
   yrot(90)  // spar along x axis
     zrot(90)  // root chord on y axis
       skin([root_rib, right(le_sweep, tip_rib)],
