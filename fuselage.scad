@@ -156,7 +156,10 @@ module fuselage_segment(cg_marks, n) {
   back_y = ocuts[n];
   // "Use a number larger than twice your object's largest axis."
   max_dim = max(FUSELAGE_L, WINGSPAN) * 2;
+  // segments print with top surface facing out
   zrot(n==1 ? 180 : 0) {
+    // segments print upright, wide section down; for segments except
+    // the nose this means front down
     xrot(n==1 ? -90 : 90) {
       front_half(s=max_dim, y=back_y) {
         back_half(s=max_dim, y=front_y) {

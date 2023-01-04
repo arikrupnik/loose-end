@@ -18,7 +18,7 @@ module wing_segment(n, side) {
   root_x = ocuts[n-1];
   tip_x = ocuts[n];
   zrot(-90)  // better to fit on a print bed
-    yrot(-90)
+    yrot(-90)  // root rib down
       // "Use a number larger than twice your object's largest axis."
       right_half(s=ROOT_CHORD*2, x=root_x)
         left_half(s=ROOT_CHORD*2, x=tip_x)

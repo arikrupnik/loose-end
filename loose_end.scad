@@ -41,7 +41,10 @@ scale([scale_factor, scale_factor, scale_factor]) {
     up(50)
       hatch(cg_marks);
   else if(output=="hatch")
+    // hatch prints with top surface facing out, consistent with fuselage segments
     zrot(180)
+      // hatch prints upright, consistent with fuselage segments and
+      // for higher resolution on top surface
       xrot(-90)
         hatch(cg_marks);
 
