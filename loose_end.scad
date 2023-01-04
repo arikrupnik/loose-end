@@ -71,16 +71,14 @@ scale([scale_factor, scale_factor, scale_factor]) {
       back(FUSELAGE_L-ROOT_CHORD)
         right(FUSELAGE_W/2)
           difference() {
-            wing(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, WING_AIRFOIL)
-              spar(SPAR_C_ROOT, SPAR_D, PANEL_SPAN);
+            wing();
             wing_cuts();
           }
   else if(output=="wing")
     if(segment)
       wing_segment(segment, side);
     else
-      wing(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, WING_AIRFOIL)
-        spar(SPAR_C_ROOT, SPAR_D, PANEL_SPAN);
+      wing();
 
   // single-layer template for marking cutouts in foam cores
   if(output=="rib-template")

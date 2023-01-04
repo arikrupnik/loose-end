@@ -36,6 +36,19 @@ MAKEFLAGS += -j 8
 # Target sets for each variant
 
 # current development target and default goal
+loose_end_24.zip: \
+	loose_end_24-fuselage-1.gcode \
+        loose_end_24-fuselage-2.gcode \
+	loose_end_24-fuselage-3.gcode \
+	loose_end_24-fuselage-4.gcode \
+	loose_end_24-hatch.gcode \
+	loose_end_24-mmtbulkhead.gcode \
+	loose_end_24-wing-1-r.gcode \
+	loose_end_24-wing-1-l.gcode \
+	loose_end_24-wing-2-r.gcode \
+	loose_end_24-wing-2-l.gcode \
+	loose_end_24-flat-parts-mm.dxf
+
 loose_end_rj.zip: \
 	loose_end_rj-fuselage-1.gcode \
         loose_end_rj-fuselage-2.gcode \
@@ -44,15 +57,6 @@ loose_end_rj.zip: \
 	loose_end_rj-hatch.gcode \
 	loose_end_rj-mmtbulkhead.gcode \
 	loose_end_rj-flat-parts-mm.dxf
-
-loose_end_24.zip: \
-	loose_end_24-fuselage-1.gcode \
-        loose_end_24-fuselage-2.gcode \
-	loose_end_24-fuselage-3.gcode \
-	loose_end_24-fuselage-4.gcode \
-	loose_end_24-hatch.gcode \
-	loose_end_24-mmtbulkhead.gcode \
-	loose_end_24-flat-parts-mm.dxf
 
 
 # Slicer settings
