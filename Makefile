@@ -9,6 +9,7 @@ VPATH = variants:samples
 # asking openscad to generate dependency files as a side effect:
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 OPENSCAD = openscad -d $@.deps
+
 SLICER = PrusaSlicer-2.5.0+linux-x64-GTK3-202209060725.AppImage
 
 # it takes over a minute to render each fuselage STL; running jobs in

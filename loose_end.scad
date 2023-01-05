@@ -90,9 +90,11 @@ scale([scale_factor, scale_factor, scale_factor]) {
 
   // 2D for DXF generation
   if(output=="flat-parts") {
+    // fin outline is a 2D polygon, goes as is
     xflip_copy()
       right(WING_TANG_L)
         fin_outline();
+    // wing_tang is 3D cube, needs projection to 2D
     projection()
       for(c=[1:4])
         back(c*WING_TANG_W*1.5)
