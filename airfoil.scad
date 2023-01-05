@@ -1,13 +1,19 @@
 // airfoil.scad: NACA 4-digit airfoils and simple wings forms
 
-// Flat airfoils path are in the XY plane as 2D objects are in
+// Flat airfoil paths are in the XY plane as 2D objects are in
 // OpenSCAD, with chords are along the X axis, with the leading edge
 // at X=0 and trailing edges towards positive X. Heights are along Y,
 // with upper surface towards positive Y.
 //
-// Wings' orientation is consistent with -Y=front, +X=right,
+// 3D wings' orientation is consistent with -Y=front, +X=right,
 // +Z=up. Root leading edge is at the origin. Root chord is along the
 // Y axis. Spar extends towards positive X.
+//
+// This file makes use of some routines from BOSL (most importantly,
+// the *function* offset(), but is otherwise generic, without
+// dependencies on anything in the Loose End project.
+//
+// NACA 4-digit math is from https://en.wikipedia.org/wiki/NACA_airfoil
 
 include <BOSL2/std.scad>
 
@@ -22,8 +28,6 @@ function exmap(x, xmax, P=2) =
   // P=1 produces even spacing of segments; the more positive, the
   // more segments at LE and larger segments at TE
   pow(x/xmax, P) * xmax;
-
-//https://en.wikipedia.org/wiki/NACA_airfoil
 
 // exmple: 2412 -> .02, .4, .12
 function af_camber(af) = floor(af/1000) / 100;
@@ -122,14 +126,18 @@ module mid_hinge(root_loc, tip_loc, root_thickness, bridge_thickness, length) {
 }
 
 
-// functions for computing CG in a multi-trapezoidal wing. `panels' is
-// a list of sub-panels. The first panel (root) has the form
-// [root_chord, tip_chord, half_span]. Subsequent panels have the form
-// [root_chord, root_chord_setback_from_previous_tip, tip_chord, sweep, panel_span]
-// Sweep describes how far the tip leading edge is behind root LE.
-//
-// TODO: description above agrees with WING_PANELS in parameters.inc
-// but may be inconsistent with code below.
+// functions for computing Mean Aerodynamic Chord in a
+// multi-trapezoidal wing, useful for setting CG ranges. `panels' is a
+// list of sub-panels. Panels have the form
+// [root_chord, root_setback,
+//  tip_chord,  sweep,
+//  panel_span]
+// If a panel's leading edge is offset from the previous panel's,
+// `root_setback' descibes this iffset; positive values move this
+// panel back; for a continuous leading edge, or for the innermost
+// panel, `root_setback is 0.
+// `sweep' describes how far the tip leading edge is behind root LE.
+
 
 function mac_length_panel(panel) =
   let(root_chord=panel[0], root_setback=panel[1], tip_chord=panel[2], tip_setback=panel[3])
@@ -145,10 +153,13 @@ function area_panel(panel) =
   let(root_chord=panel[0], tip_chord=panel[2], span=panel[4])
     (root_chord + tip_chord) / 2 * span;
 
+// length of MAC; CG ranges are fractions of this value
 function mac_length(panels) =
   sum([for(p=panels) mac_length_panel(p) * area_panel(p)]) /
   sum([for(p=panels) area_panel(p)]);
 
+// distance from the leadin edge of root rib in inner-most panel and
+// the LE of MAC; CG ranges are set back from this point
 function mac_setback(panels) =
   sum([for(p=panels) mac_setback_panel(p) * area_panel(p)]) /
   sum([for(p=panels) area_panel(p)]);
