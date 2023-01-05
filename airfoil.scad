@@ -33,6 +33,9 @@ function exmap(x, xmax, P=2) =
 function af_camber(af) = floor(af/1000) / 100;
 function af_max_camber_pos(af) = floor(af/100) % 10 / 10;
 function af_thickness(af) = (af%100) / 100;
+// example: af(.02, .4, .12) -> 2412
+function af(camber, camber_pos, thickness) = camber*100*1000 + camber_pos*10*100 + thickness*100;
+
 
 // NACA symetrical airfoil formula
 function foil_y(x, c, t, closed=true) =
@@ -65,8 +68,9 @@ function camber_x(x,c,t,m,p, upper=true) = ( upper == true ?
 // computing the shape of a rib accounting for skin of this thickness;
 // negative numbers increase the size of the shape, as if draping this
 // much skin on a nominal airfoil
-function airfoil(c, af, shave=0) =
-  let(step = c/$airfoil_fn, // average length of polygon segments
+function airfoil(af, chord, shave=0) =
+  let(c = chord,
+    step = c/$airfoil_fn, // average length of polygon segments
     t = af_thickness(af),
     m = af_camber(af),
     p = af_max_camber_pos(af),
@@ -87,8 +91,8 @@ function airfoil(c, af, shave=0) =
     points = concat([[0,0]], points_u, [[c,0]], points_l))
   offset(points, delta=-shave, closed=true, same_length=true);
 
-module airfoil(c, af, shave=0) {
-  polygon(airfoil(c, af, shave));
+module airfoil(af, chord, shave=0) {
+  polygon(airfoil(af, chord, shave));
 }
 
 
@@ -96,8 +100,8 @@ module airfoil(c, af, shave=0) {
 // and tip, but with (possibly) different chords and with a sweep.
 // le_sweep: tip leading edge is this far behind root LE; negative values produce forward sweep
 module trapezoidal_wing(root_chord, tip_chord, le_sweep, panel_span, af, shave=0) {
-  root_rib = airfoil(root_chord, af, shave);
-  tip_rib = airfoil(tip_chord, af, shave);
+  root_rib = airfoil(af, root_chord, shave);
+  tip_rib = airfoil(af, tip_chord, shave);
   difference() {
     yrot(90)  // spar along x axis
       zrot(90)  // root chord on y axis

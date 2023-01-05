@@ -12,11 +12,10 @@ include <parameters.inc>
 module fuselage_seamless(cg_marks) {
   difference() {
     union() {
-      // main outside shape
-      rot([90,0,90]) linear_extrude(FUSELAGE_W, center=true) {
-        af = 00*100+FUSELAGE_THICKNESS*100;
-        airfoil(FUSELAGE_L, af);
-      }
+      // main outside shape is a short-span wing
+      xflip_copy()
+        trapezoidal_wing(FUSELAGE_L, FUSELAGE_L, 0, FUSELAGE_W/2,
+                         af(0, 0, FUSELAGE_THICKNESS));
       // CG marks--top and bottom
       for(cg_p=cg_marks) {
         // top of fuselage in this position
