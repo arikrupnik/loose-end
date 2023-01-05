@@ -17,17 +17,17 @@
 
 include <BOSL2/std.scad>
 
+// Number of points on each side (top and bottom) of an airfoil polygon
 $airfoil_fn = 120;
 
-/* Airfoils have sharper curves on the leading edge than trailing
-   edge. This function produces an alternative spacing, with tighter
-   segments at LE. */
-function exmap(x, xmax, P=2) =
-  // x: between 0..xmax
-  // xmax: chord length
+// Exponential mapping. Airfoils have sharper curves on the leading
+// edge than trailing edge. This function produces an alternative
+// spacing, with tighter segments at LE.
+function exmap(x, P=2) =
+  // x: between 0.0..1.0
   // P=1 produces even spacing of segments; the more positive, the
   // more segments at LE and larger segments at TE
-  pow(x/xmax, P) * xmax;
+  pow(x, P);
 
 // exmple: 2412 -> .02, .4, .12
 function af_camber(af) = floor(af/1000) / 100;
@@ -38,27 +38,27 @@ function af(camber, camber_pos, thickness) = camber*100*1000 + camber_pos*10*100
 
 
 // NACA symetrical airfoil formula
-function foil_y(x, c, t, closed=true) =
-  (5*t*c)*( ( 0.2969 * sqrt(x/c) ) - ( 0.1260*(x/c) ) - ( 0.3516*pow((x/c),2) ) + ( 0.2843*pow((x/c),3) ) - ( ( closed ? 0.1036 : 0.1015)*pow((x/c),4) ) );
+function foil_y(x, t, closed=true) =
+  (5*t)*( ( 0.2969 * sqrt(x) ) - ( 0.1260*x ) - ( 0.3516*pow(x,2) ) + ( 0.2843*pow(x,3) ) - ( ( closed ? 0.1036 : 0.1015)*pow(x,4) ) );
 
-function camber(x,c,m,p) = ( x <= (p * c) ?
-  ( ( (c * m)/pow( p, 2 ) ) * ( ( 2 * p * (x / c) ) - pow( (x / c) , 2) ) ) :
-  ( ( (c * m)/pow((1 - p),2) ) * ( (1-(2 * p) ) + ( 2 * p * (x / c) ) - pow( (x / c) ,  2)))
+function camber(x,m,p) = ( x <= p ?
+  ( ( m/pow( p, 2 ) ) * ( ( 2 * p * x ) - pow( x , 2) ) ) :
+  ( ( m/pow((1 - p),2) ) * ( (1-(2 * p) ) + ( 2 * p * x ) - pow( x ,  2)))
 );
 
-function theta(x,c,m,p) = ( x <= (p * c) ?
-  atan( ((m)/pow(p,2)) * (p - (x / c)) ) :
-  atan( ((m)/pow((1 - p),2)) * (p - (x / c))  )
+function theta(x,m,p) = ( x <= p ?
+  atan( ((m)/pow(p,2)) * (p - x) ) :
+  atan( ((m)/pow((1 - p),2)) * (p - x)  )
 );
 
-function camber_y(x,c,t,m,p, upper=true) = ( upper == true ?
-  ( camber(x,c,m,p) + (foil_y(x,c,t) * cos( theta(x,c,m,p) ) ) ) :
-  ( camber(x,c,m,p) - (foil_y(x,c,t) * cos( theta(x,c,m,p) ) ) )
+function camber_y(x,t,m,p, upper=true) = ( upper == true ?
+  ( camber(x,m,p) + (foil_y(x,t) * cos( theta(x,m,p) ) ) ) :
+  ( camber(x,m,p) - (foil_y(x,t) * cos( theta(x,m,p) ) ) )
 );
 
-function camber_x(x,c,t,m,p, upper=true) = ( upper == true ?
-  ( x - (foil_y(x,c,t) * sin( theta(x,c,m,p) ) ) ) :
-  ( x + (foil_y(x,c,t) * sin( theta(x,c,m,p) ) ) )
+function camber_x(x,t,m,p, upper=true) = ( upper == true ?
+  ( x - (foil_y(x,t) * sin( theta(x,m,p) ) ) ) :
+  ( x + (foil_y(x,t) * sin( theta(x,m,p) ) ) )
 );
 
 
@@ -69,27 +69,29 @@ function camber_x(x,c,t,m,p, upper=true) = ( upper == true ?
 // negative numbers increase the size of the shape, as if draping this
 // much skin on a nominal airfoil
 function airfoil(af, chord, shave=0) =
-  let(c = chord,
-    step = c/$airfoil_fn, // average length of polygon segments
-    t = af_thickness(af),
-    m = af_camber(af),
-    p = af_max_camber_pos(af),
+  let(step = 1/$airfoil_fn, // average x-length of polygon segments
+      t = af_thickness(af),
+      m = af_camber(af),
+      p = af_max_camber_pos(af),
 
-    // To avoid duplicating points at c=0% and c=100%, I exclude them
-    // from computation and add them in the final
-    // concatenation. Duplicate (or very close) points interfere with
-    // BOSL's offset computation. The need for a point at c=100%
-    // renders the question of open or closed trailing edge moot.
-    points_u = ( m == 0 || p == 0) ?
-      [for (i = [step:step:c-step]) let (ex = exmap(i,c), y = foil_y(ex,c,t) ) [ex,y]] :
-      [for (i = [step:step:c-step]) let (ex = exmap(i,c), x = camber_x(ex,c,t,m,p), y = camber_y(ex,c,t,m,p) ) [x,y]],
-
-    points_l = ( m == 0 || p == 0) ?
-      [for (i = [c-step:-1*step:step]) let (ex = exmap(max(i,0),c), y = foil_y(ex,c,t) * -1 ) [ex,y]] :
-      [for (i = [c-step:-1*step:step]) let (ex = exmap(max(i,0),c), x = camber_x(ex,c,t,m,p,upper=false), y = camber_y(ex,c,t,m,p, upper=false) ) [x,y]],
-
-    points = concat([[0,0]], points_u, [[c,0]], points_l))
-  offset(points, delta=-shave, closed=true, same_length=true);
+      // To avoid duplicating points at c=0% and c=100%, I exclude them
+      // from computation and add them in the final
+      // concatenation. Duplicate (or very close) points interfere with
+      // BOSL's offset computation. The need for a point at c=100%
+      // renders the question of open or closed trailing edge moot.
+      points_u = [for (i = [step:step:1-step])
+          let (ex = exmap(i),
+               x = camber_x(ex,t,m,p),
+               y = camber_y(ex,t,m,p))
+            [x,y]],
+      points_l = [for (i = [1-step:-1*step:step])
+          let (ex = exmap(i),
+               x = camber_x(ex,t,m,p, upper=false),
+               y = camber_y(ex,t,m,p, upper=false))
+            [x,y]],
+      points = concat([[0,0]], points_u, [[1,0]], points_l),
+      scaled_points = [for (p = points) [for (xy = p) xy*chord]])
+  offset(scaled_points, delta=-shave, closed=true, same_length=true);
 
 module airfoil(af, chord, shave=0) {
   polygon(airfoil(af, chord, shave));
