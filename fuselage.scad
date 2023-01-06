@@ -17,13 +17,14 @@ module fuselage_seamless(cg_marks) {
         trapezoidal_wing(FUSELAGE_L, FUSELAGE_L, 0, FUSELAGE_W/2,
                          af(0, 0, FUSELAGE_THICKNESS));
       // CG marks--top and bottom
-      for(cg_p=cg_marks) {
-        // top of fuselage in this position
-        fuse_h = foil_y(cg_p, FUSELAGE_L, FUSELAGE_THICKNESS);
-        back(cg_p)
-          zflip_copy()
-            up(fuse_h)
-              xcyl(d=SCRIBE_LINE_W,l=FUSELAGE_W, anchor=CENTER);
+      intersection() {
+        xflip_copy()
+          trapezoidal_wing(FUSELAGE_L, FUSELAGE_L, 0, FUSELAGE_W/2,
+                           af(0, 0, FUSELAGE_THICKNESS), shave=-SCRIBE_LINE_W);
+        for(cg_p=cg_marks) {
+          back(cg_p)
+            cube([FUSELAGE_W, SCRIBE_LINE_W, FUSELAGE_H*2], anchor=CENTER);
+        }
       }
     }
     // MMT
@@ -41,15 +42,6 @@ module fuselage_seamless(cg_marks) {
       right(FUSELAGE_W/2)
         back(FUSELAGE_L)
           ycyl(d=SCRIBE_LINE_W,l=ROOT_CHORD+5, anchor=BACK);
-    // CG marks--sides of fuselage
-    for(cg_p=cg_marks) {
-      // top of fuselage in this position
-      fuse_h = foil_y(cg_p, FUSELAGE_L, FUSELAGE_THICKNESS);
-      back(cg_p)
-        xflip_copy()
-          right(FUSELAGE_W/2)
-            zcyl(d=SCRIBE_LINE_W,l=fuse_h*2, anchor=CENTER);
-    }
     // pitot tube
     union() {
       ycyl(l=PITOT_TUBE_L, d=PITOT_TUBE_D, anchor=FRONT);
