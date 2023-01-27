@@ -50,7 +50,7 @@ module fuselage_seamless(cg_marks) {
     }
     // cockpit (chamfer front and rear to ease bribging)
     back(PITOT_TUBE_L)  // far enough forward to meet pitot tube
-      cuboid([FUSELAGE_W*.8,FUSELAGE_L*.4,COCKPIT_H],
+      cuboid([FUSELAGE_W*.85,FUSELAGE_L*.4,COCKPIT_H],
              chamfer=COCKPIT_H/2,
              edges=[FRONT,BACK],
              anchor=FWD);
