@@ -14,6 +14,10 @@ module wing() {
               ROOT_CHORD * af_thickness(WING_AIRFOIL),
               .75,
               PANEL_SPAN);
+    for(p=WING_TANGS)
+      back(p)
+        left(SHEET_THICKNESS)  // accounting for fins
+          tang_pocket(WING_TANG_L, WING_TANG_W, SHEET_THICKNESS);
   }
 }
 
