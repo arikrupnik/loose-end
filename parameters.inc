@@ -17,6 +17,7 @@ FUSELAGE_THICKNESS = .14; // fuselage shape (implies 0 camber)
 WING_AIRFOIL=0014;        // wing section
 SHEET_THICKNESS = 1.6;    // 2D parts: fins, wing tangs
 EXTRUSION_W = .45;        // extrusion width
+LAYER_H     = .15;        // extrusion layer height
 PITOT_TUBE_D = 4.2;       // pitot tube diameter
 PITOT_TUBE_L = 35;        // part of pitot tube that can embed in solid fuselage
 
