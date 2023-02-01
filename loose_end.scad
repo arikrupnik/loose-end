@@ -72,7 +72,7 @@ scale([scale_factor, scale_factor, scale_factor]) {
   if(output==undef)
     xflip_copy()
       back(FUSELAGE_L-ROOT_CHORD)
-        right(FUSELAGE_W/2)
+        right(FUSELAGE_W/2 + SHEET_THICKNESS)
           difference() {
             wing();
             wing_cuts();

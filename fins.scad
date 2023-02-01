@@ -8,7 +8,7 @@ include <parameters.inc>
 module root_rib() {
   difference() {
     round2d(ir=5) {  // stress relief on LE root
-      airfoil(ROOT_CHORD, WING_AIRFOIL);
+      airfoil(WING_AIRFOIL, ROOT_CHORD);
       right(ROOT_CHORD)
         children();
     }
