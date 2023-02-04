@@ -58,7 +58,7 @@ scale([scale_factor, scale_factor, scale_factor]) {
 
   // fins
   if(output==undef)
-    %xflip_copy()
+    xflip_copy()
        ymove(FUSELAGE_L - ROOT_CHORD) xmove(FUSELAGE_W/2 + CUT_WIDTH)
          yrot(90)
            linear_extrude(SHEET_THICKNESS)
