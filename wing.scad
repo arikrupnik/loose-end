@@ -3,6 +3,7 @@
 include <BOSL2/std.scad>
 include <airfoil.scad>
 include <parameters.inc>
+include <servo_pocket.scad>
 
 
 // wing panel from parameters
@@ -28,10 +29,11 @@ module wing_segment(n, side) {
   tip_x = ocuts[n];
   zrot(-90)  // better to fit on a print bed
     yrot(-90)  // root rib down
-      // "Use a number larger than twice your object's largest axis."
-      right_half(s=ROOT_CHORD*2, x=root_x)
-        left_half(s=ROOT_CHORD*2, x=tip_x)
-          wing();
+      mirror([0,side=="r"?1:0,0])
+        // "Use a number larger than twice your object's largest axis."
+        right_half(s=ROOT_CHORD*2, x=root_x)
+          left_half(s=ROOT_CHORD*2, x=tip_x)
+            wing();
 }
 
 // cutter planes to visualize segmentation
