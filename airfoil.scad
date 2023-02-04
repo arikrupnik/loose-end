@@ -16,6 +16,7 @@
 // NACA 4-digit math is from https://en.wikipedia.org/wiki/NACA_airfoil
 
 include <BOSL2/std.scad>
+include <BOSL2/fnliterals.scad>
 
 /////////////////////
 // NACA 4-digit airfoil construction
@@ -91,7 +92,7 @@ function points_at(x, max_camber, max_camber_pos, thickness) =
 // spacing of segments; the more positive, the more segments at LE and
 // larger segments at TE
 function airfoil(af, chord, shave=0, P=2) =
-  let(step = 1/($airfoil_fn-1), // average x-length of polygon segments,
+  let(step = 1/($airfoil_fn), // average x-length of polygon segments,
       m = af_max_camber(af),
       p = af_max_camber_pos(af),
       t = af_thickness(af),
@@ -119,8 +120,127 @@ function airfoil(af, chord, shave=0, P=2) =
   // optionaly, add or remove a skin
   offset(scaled_points, delta=-shave, closed=true, same_length=true);
 
+assert(len(airfoil(0014, 100))==$airfoil_fn*2);
+
 module airfoil(af, chord, shave=0) {
   polygon(airfoil(af, chord, shave));
+}
+
+// Returns the top and bottom skin distance from reference line at a
+// point on the chord. For symetrical airfoils this is trivial, but
+// for airfoils with positive camber, computation is more
+// complex. This implementation returns values that are on the
+// polygonal approximation that the rest of this file supports, rather
+// than an idealized, infinite-precision formula. This guarantees that
+// the results are on the surface of the polygon that is the result of
+// `arifoil()' function.
+function top_bottom_at_x(af_poly, chord_p) =
+  let(line = [[chord_p,10], [chord_p,-10]],
+      intersection_segments = polygon_line_intersection(af_poly, line))
+  // intersection is a list of segments, each of which can be a point
+  // or a line; undef when there is no intersection; in the case of a
+  // NACA airfiol, there can be at most one segment; this segment is a
+  // point at chord=0% and chord=100%, otherwise it is a line, a list
+  // of two points whose x=chord_p and y is the answer:
+  // pli(airfoil(0014, 100),   0) -> [[[0, 0]]]
+  // pli(airfoil(0014, 100),  60) -> [[[60, 5.2961], [60, -5.2961]]]
+  // pli(airfoil(0014, 100), 100) -> [[[100, 0]]]
+  assert(is_def(intersection_segments), "chord_p outside airfoil")
+  assert(len(intersection_segments)==1, "multiple intersections")
+  let(segment = intersection_segments[0])
+  len(segment)==1 ? [segment[0], segment[0]] : segment;
+
+assert(top_bottom_at_x(airfoil(0014, 100),  0) == [[0,0],[0,0]]);
+let($airfoil_fn=100) {
+  assert(approx(top_bottom_at_x(airfoil(0014, 100), 30),
+                [[30, 7], [30, -7]],
+                0.001));
+}
+assert(top_bottom_at_x(airfoil(0014, 100),100) == [[100,0],[100,0]]);
+
+// Generates a list of segments [[p0,p1],[p1,p2],[p2,p3]] from a list
+// of points [p0,p1,p2,p3]. With closed=true(the default), adds
+// [p3,p0] to the list. With top==undef, return all segments; with
+// top=truem return top surface; with top=flase, bottom surface.
+function segments_from_path(p, top=true, closed=true) =
+  let(explicit_segments = accumulate(function(a,pt) [a[1],pt], list_tail(p,1), [undef,p[0]]),
+      all_segments = closed ? concat(explicit_segments, [select(p,-1,0)]) : explicit_segments)
+  is_undef(top) ? all_segments :
+  top ?
+  select(all_segments, 0, len(all_segments)/2-1) :
+  select(all_segments, len(all_segments)/2, -1);
+
+// number of segments matches $airfoil_fn*2 for full list, $airfoil_fn for top and bottom
+assert(len(segments_from_path(airfoil(0014, 100), undef)) == $airfoil_fn*2);
+assert(len(segments_from_path(airfoil(0014, 100), true))  == $airfoil_fn);
+assert(len(segments_from_path(airfoil(0014, 100), false)) == $airfoil_fn);
+// default is to return top surface
+assert(segments_from_path(airfoil(0014, 100)) == segments_from_path(airfoil(0014, 100), true));
+// top starts at [0,0] and ends at [chord,0]
+assert(segments_from_path(airfoil(0014, 100), true)[0][0] == [0,0]);
+assert(segments_from_path(airfoil(0014, 100), true)[$airfoil_fn-1][1] == [100,0]);
+// bottom starts at [chord,0] and ends at [0,0]
+assert(segments_from_path(airfoil(0014, 100), false)[0][0] == [100,0]);
+assert(segments_from_path(airfoil(0014, 100), false)[$airfoil_fn-1][1] == [0,0]);
+
+// The angle, in degrees, between the line [p0,p1] and the horizontal
+// line [[0,0], [1,0]]. You need to rotate the horizontal line this
+// many degrees clockwise to be parallel to the argument line.
+function angle_between_points(p0, p1) =
+  let(dx=p1.x-p0.x,
+      dy=p1.y-p0.y)
+  -atan(dy/dx);
+
+// 8 cardinal points
+assert(angle_between_points([0,0], [ 1, 0]) ==   0);
+assert(angle_between_points([0,0], [ 1,-1]) ==  45);
+assert(angle_between_points([0,0], [ 0,-1]) ==  90);
+assert(angle_between_points([0,0], [-1,-1]) == -45);
+assert(angle_between_points([0,0], [-1, 0]) ==   0);
+assert(angle_between_points([0,0], [-1, 1]) ==  45);
+assert(angle_between_points([0,0], [ 0, 1]) == -90);
+assert(angle_between_points([0,0], [ 1, 1]) == -45);
+// where origin is non-zero
+assert(angle_between_points([1,1], [ 2, 2]) == -45);
+
+// Computes the endpoints of a flat hatch of a specific length on an
+// airfoil surface from the X location of its front, as well as the
+// hatch's angle relative to chord line.
+function af_hatch(af_poly, front, length, top=true) =
+  let(pivot = top_bottom_at_x(af_poly, front)[top ? 0 : 1],
+      segments = segments_from_path(af_poly, top),
+      potential_isects = map(function(segment)
+                             // cli() can find 0, 1 or 2
+                             // intersections; in the case of a circle
+                             // with radius on a segment and bounded
+                             // segments, multiple intersections are
+                             // impossible cli() always returns a list
+                             // of length 1; hence [0]
+                             circle_line_intersection(abs(length),
+                                                      pivot,
+                                                      segment,
+                                                      true)[0],
+                             segments),
+      // pi has an element for each segment; at most two elements have
+      // intersections with the circle; others are empty lists that I
+      // filter out
+      isects = filter(function(i) i,
+                      potential_isects),
+      // find intersection on the appropriate side of the pivot, if
+      // one exists
+      f = sign(length) > 0 ? f_gt() : f_lt(),
+      isect = filter(function(i) f(i.x, front), isects))
+  assert(len(isect)==1, "hatch length exceeds chord")
+  let(pt1 = isect[0],
+      angle = angle_between_points(pivot, pt1))
+  [pivot, pt1, angle];
+
+let($airfoil_fn = 100,
+    af = airfoil(0014, 100)) {
+  assert(approx(af_hatch(af, 60,  10),        [[60,  5.30428],[69.9438,  4.2452],  6.0795], 0.0001));
+  assert(approx(af_hatch(af, 60, -10),        [[60,  5.30428],[50.037,   6.1639],  4.9314], 0.0001));
+  assert(approx(af_hatch(af, 60,  10, false), [[60, -5.30428],[69.9438, -4.2452], -6.0795], 0.0001));
+  assert(approx(af_hatch(af, 60, -10, false), [[60, -5.30428],[50.037,  -6.1639], -4.9314], 0.0001));
 }
 
 
@@ -142,6 +262,30 @@ module trapezoidal_wing(root_chord, tip_chord, le_sweep, panel_span, af, shave=0
     children();
   }
 }
+
+// Compute the length and setback of the chord at a span-wise distance
+// from the root. Arguments are the same as `trapezoidal_wing' with
+// the additional argument `span_x', denoting distance from the
+// root. Returns the list [chord_at_x,sweep_at_x]
+function trapezoidal_wing_chord_at_span(root_chord, tip_chord, le_sweep, panel_span, span_x) =
+  let(span_ratio = span_x / panel_span,
+      x_chord = lerp(root_chord, tip_chord, span_ratio))
+  x_chord;
+function trapezoidal_wing_sweep_at_span(root_chord, tip_chord, le_sweep, panel_span, span_x) =
+  let(span_ratio = span_x / panel_span,
+      x_sweep = lerp(0, le_sweep, span_ratio))
+  x_sweep;
+
+assert(trapezoidal_wing_chord_at_span(100, 20, 20, 200,   0) == 100);
+assert(trapezoidal_wing_sweep_at_span(100, 20, 20, 200,   0) ==   0);
+assert(trapezoidal_wing_chord_at_span(100, 20, 20, 200,  50) ==  80);
+assert(trapezoidal_wing_sweep_at_span(100, 20, 20, 200,  50) ==   5);
+assert(trapezoidal_wing_chord_at_span(100, 20, 20, 200, 100) ==  60);
+assert(trapezoidal_wing_sweep_at_span(100, 20, 20, 200, 100) ==  10);
+assert(trapezoidal_wing_chord_at_span(100, 20, 20, 200, 150) ==  40);
+assert(trapezoidal_wing_sweep_at_span(100, 20, 20, 200, 150) ==  15);
+assert(trapezoidal_wing_chord_at_span(100, 20, 20, 200, 200) ==  20);
+assert(trapezoidal_wing_sweep_at_span(100, 20, 20, 200, 200) ==  20);
 
 // simple, round spar cutout, perpendicular to fuselage
 // root_loc: distance from root LE to center of spar

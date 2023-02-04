@@ -15,6 +15,22 @@ module wing() {
               ROOT_CHORD * af_thickness(WING_AIRFOIL),
               .75,
               PANEL_SPAN);
+    for(sn=[0:len(SERVO_X)-1])
+      let(span_x = SERVO_X[sn],
+          chord = trapezoidal_wing_chord_at_span(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, span_x),
+          sweep = trapezoidal_wing_sweep_at_span(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, span_x),
+          af = airfoil(WING_AIRFOIL, chord),
+          chord_p = SERVO_Y-sweep,
+          srv = struct_val(SERVOS, SERVO_TYPE[sn]),
+          srv_l = struct_val(srv, "l"),
+          srv_sink = struct_val(srv, "typ_sink"),
+          hatch = af_hatch(af, chord_p, srv_l),
+          angle = hatch[2])
+        right(span_x)
+          back(SERVO_Y)
+            up(hatch[0].y - srv_sink)
+              xrot(-angle)
+                servo_pocket_vertical(srv);
     for(p=WING_TANGS)
       back(p)
         left(SHEET_THICKNESS)  // accounting for fins

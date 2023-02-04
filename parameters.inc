@@ -54,6 +54,11 @@ WING_TANGS   = [for (p=[.1, .7]) ROOT_CHORD*p]; // wing attachment points, relat
 SERVO_WIRE_TUNNEL_D = 12;
 SERVO_WIRE_TUNNEL_EXIT = SPAR_C_ROOT - SPAR_D*3; // ahead of spar and carrythrough partition
 
+// servo locations on the wing
+SERVO_X = [PANEL_SPAN/4, PANEL_SPAN/4*3];
+SERVO_Y = SPAR_C_ROOT + SPAR_D;  // distance between spar and front of servo is 1/2 SPAR_D
+SERVO_TYPE = ["HS-55", "HS-50"];
+
 // wing + fuselage geometry for CG calculations
 WING_PANELS=[[FUSELAGE_L, 0,
               FUSELAGE_L, 0,
