@@ -15,5 +15,10 @@ module plug(d, h) {
   }
 }
 
-// 13mm motors
-plug(9.75, 6);
+xdistribute(30) {
+  // 13mm motors
+  plug(9.75, 6);
+
+  // 18mm motors
+  plug(12.7, 9);
+}
