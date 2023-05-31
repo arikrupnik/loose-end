@@ -78,8 +78,9 @@ module fuselage_seamless(cg_marks) {
                    [tunnel_x_start+tunnel_x_l, tunnel_y_exit],
                    [tunnel_x_exit+.1,  tunnel_y_exit]];
     xflip_copy()
-      path_extrude2d(tunnel_path)
-        circle(d=SERVO_WIRE_TUNNEL_D);
+      stroke(map(function(p) [p.x, p.y, 0], tunnel_path),  // 3D path from 2D
+             SERVO_WIRE_TUNNEL_D,
+             endcaps="butt");
     // igniter wire (spring) channels
     xflip_copy()
       right(tunnel_x_start)
