@@ -15,7 +15,6 @@ module wing() {
     mid_hinge(ROOT_CHORD*(1-ELEVON_CHORD),
               LE_SWEEP+(TIP_CHORD*(1-ELEVON_CHORD)),
               ROOT_CHORD * af_thickness(WING_AIRFOIL),
-              .75,
               PANEL_SPAN);
     // servo wire tunnel--end even with outboard-most servo's outer edge
     let(outboard_servo_n = len(SERVO_X) - 1,
