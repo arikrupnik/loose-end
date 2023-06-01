@@ -54,15 +54,6 @@ module _servo_plug(w, l, h, l_w_tabs, wire_exit, projection_h) {
     fwd(wire_thick)
           cube([wire_width, wire_thick, wire_thick+wire_exit],
                anchor=FRONT+TOP);
-  // wire exit
-  let(servo_connector_h = 3.5,
-      servo_connector_w = 8.5,
-      wire_exit_length = 15,
-      wire_exit_angle = 10)
-    down(wire_exit)
-      xrot(wire_exit_angle)
-        cube([servo_connector_w, wire_exit_length, servo_connector_h],
-             anchor=BACK+TOP);
 }
 
 module _servo_supports(w, l, h, l_w_tabs, wire_exit, projection_h) {
