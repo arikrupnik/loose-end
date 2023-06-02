@@ -295,16 +295,20 @@ module spar(root_loc, diameter, length) {
 }
 
 // hinge in the middle of an airfoil, with equal cutouts top and bottom
-module mid_hinge(root_loc, tip_loc, root_thickness, length, live_hinge_thickness=0, angle=60) {
+module mid_hinge(root_loc, tip_loc, root_thickness, length,
+                 live_hinge_width=0,     // gap between wing and control surface
+                 live_hinge_thickness=0, // thickness of the live hinge
+                 angle=60) {
   back(root_loc) {
     skew(syx=(tip_loc-root_loc)/length) {
-      difference() {
-        zflip_copy() {
-          prismoid(size2=[length,0], h=root_thickness/2, xang=90, yang=90-(angle/2), anchor=LEFT+TOP);
-        }
-        if(live_hinge_thickness > 0) {
-          // truncate tip to create live hinge
-          cube([length, root_thickness/2, live_hinge_thickness], anchor=LEFT);
+      zflip_copy() {
+        down(live_hinge_thickness) {
+          // live_hinge_width==0 produces "WARNING: Object may not be a valid 2-manifold"
+          prismoid(size2=[length, live_hinge_width+0.00001],
+                   h=root_thickness/2,
+                   xang=90,            // root and tip are vertical
+                   yang=90-(angle/2),  // /2 to compute each base angle from apex angle
+                   anchor=LEFT+TOP);
         }
       }
     }

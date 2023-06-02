@@ -25,6 +25,6 @@ back(600) xflip_copy() {
   trapezoidal_wing(200, 100, 100, 300, 0015) {
     spar(120, 5, 301);
     // constant-chord elevon (10% of root chord), with .1mm live hinge
-    mid_hinge(190, 190, 30, 300, live_hinge_thickness=.1);
+    mid_hinge(190, 190, 30, 300, live_hinge_width=.2, live_hinge_thickness=.1);
   }
 }
