@@ -291,7 +291,7 @@ assert(trapezoidal_wing_sweep_at_span(100, 20, 20, 200, 200) ==  20);
 // root_loc: distance from root LE to center of spar
 module spar(root_loc, diameter, length) {
   back(root_loc)
-    xcyl(d=diameter, l=length, anchor=LEFT);
+    xcyl(d=diameter, l=length, circum=true, anchor=LEFT);
 }
 
 // hinge in the middle of an airfoil, with equal cutouts top and bottom
