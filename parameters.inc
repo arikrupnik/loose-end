@@ -36,7 +36,7 @@ HATCH_W = FUSELAGE_W*.7;   // width
 WINGSPAN   = MOTOR_D*35;  // constraint: launcher outrigger span is 31"
 ROOT_CHORD = MOTOR_D*10;
 TIP_CHORD  = ROOT_CHORD*.5;
-ELEVON_CHORD = .1;  // as a fraction of airfoil chord
+ELEVON_CHORD = .15;  // as a fraction of airfoil chord
 LE_SWEEP   = (ROOT_CHORD-TIP_CHORD)*(1-ELEVON_CHORD);  // straight hinge line
 PANEL_SPAN =(WINGSPAN-FUSELAGE_W)/2;
 // wing spar center--close to tip LE
@@ -51,7 +51,7 @@ WING_SCREW_L = 12;  // thread length
 WING_TANGS   = [for (p=[.1, .7]) ROOT_CHORD*p]; // wing attachment points, relative to root LE
 
 // servo wire tunnels
-SERVO_WIRE_TUNNEL_D = 12;
+SERVO_WIRE_TUNNEL_D = 14;
 SERVO_WIRE_TUNNEL_EXIT = SPAR_C_ROOT - SPAR_D*3; // ahead of spar and carrythrough partition
 
 // servo locations on the wing
