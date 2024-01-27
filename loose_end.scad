@@ -36,6 +36,13 @@ scale([scale_factor, scale_factor, scale_factor]) {
     else
       fuselage(cg_marks);
 
+  // test block for fitting spars
+  if(output=="spartestblock")
+    difference() {
+      cube([SPAR_D*3, SPAR_D*2, SPAR_D*2], anchor=CENTER);
+      xcyl(d=SPAR_D, l=SPAR_D*3.1);
+    }
+
   // fuselage hatch
   if(output==undef)
     up(50)
