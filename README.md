@@ -19,6 +19,8 @@ In January 2023, I am designing printable wings.
 
 ![Loose End 24 DW in boost and glide](z_pics/z_boost-glide.jpg)
 
+![Loose End 29 using Freewing F-86 wings](z_pics/z_f86-wings.jpg)
+
 Fuselage prints upright, in sections.
 Most pieces use a single perimeter and 2% infill.
 Spar carrythrough (green in the image below) uses 15% infill.
@@ -52,5 +54,6 @@ Key settings are:
 I make a new tag (release) when I print a new flying aircraft.
 Release notes summarize changes from previous version and actual experience with them.
 
-* October 2020: PLA fuselage, RJ wings, G10 fins
-* April 2020: first flights, PLA fulseage, RJ wings and fins
+* January 2024: 29mm version using wings and fins from 80mm Freewing F-86
+* October 2022: PLA fuselage, RJ wings, G10 fins
+* April 2022: first flights, PLA fulseage, RJ wings and fins

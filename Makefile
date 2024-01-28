@@ -50,6 +50,16 @@ loose_end_24.zip: \
 	loose_end_24-wing-2-l.gcode \
 	loose_end_24-flat-parts-mm.dxf
 
+loose_end_f86.zip: \
+	loose_end_f86-fuselage-1.gcode \
+	loose_end_f86-fuselage-2.gcode \
+	loose_end_f86-fuselage-3.gcode \
+	loose_end_f86-fuselage-4.gcode \
+	loose_end_f86-fuselage-5.gcode \
+	loose_end_f86-hatch.gcode \
+	loose_end_f86-mmtbulkhead.gcode \
+	loose_end_f86-flat-parts-mm.dxf
+
 loose_end_rj.zip: \
 	loose_end_rj-fuselage-1.gcode \
         loose_end_rj-fuselage-2.gcode \
@@ -72,7 +82,7 @@ SLICER_BASE_INI = --load slicer-config/base-mk3s-0.15quality-prusamentPLA.ini
 loose_end_24-wing%.gcode: \
 	SLICER_FLAGS = --load slicer-config/single-wall-wing.ini
 # spar carrythroughs need extra structure
-loose_end_rj-fuselage-3.gcode loose_end_24-fuselage-3.gcode : \
+loose_end_rj-fuselage-3.gcode loose_end_24-fuselage-3.gcode loose_end_f86-fuselage-4.gcode %-spartestblock.gcode : \
 	SLICER_FLAGS = --load slicer-config/spar-carrythrough.ini
 # MMT plugs use different fill pattern
 %-mmtbulkhead.gcode: \
@@ -92,6 +102,8 @@ OPENSCAD_STEM_CL=$(OPENSCAD) -o $@ $(guile (D "$*")) $<
 loose_end_rj-%.stl: loose_end_rj.scad
 	${OPENSCAD_STEM_CL}
 loose_end_24-%.stl: loose_end_24.scad
+	${OPENSCAD_STEM_CL}
+loose_end_f86-%.stl: loose_end_f86.scad
 	${OPENSCAD_STEM_CL}
 
 # DXF from SCAD for CNC cutting
