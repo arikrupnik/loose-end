@@ -18,3 +18,8 @@ SPAR_C_ROOT = 63;
 PANEL_SPAN = 315;
 
 SERVO_WIRE_TUNNEL_EXIT = 45;
+
+// I omit servo pockets--they already exist in the foam
+SERVO_X = [];
+SERVO_Y = [];
+SERVO_TYPE = [];

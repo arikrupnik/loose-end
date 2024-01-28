@@ -18,36 +18,39 @@ module wing() {
               PANEL_SPAN,
               live_hinge_width=0,
               live_hinge_thickness=0);
-    // servo wire tunnel--end even with outboard-most servo's outer edge
-    let(outboard_servo_n = len(SERVO_X) - 1,
-        outboard_servo_x = SERVO_X[outboard_servo_n],
-        outboard_servo = struct_val(SERVOS, SERVO_TYPE[outboard_servo_n]),
-        outboard_servo_w = struct_val(outboard_servo, "w"))
-      spar(SERVO_WIRE_TUNNEL_EXIT, SERVO_WIRE_TUNNEL_D, outboard_servo_x+outboard_servo_w/2);
-    // servo pockets
-    for(sn=[0:len(SERVO_X)-1])
-      let(span_x = SERVO_X[sn],
-          chord = trapezoidal_wing_chord_at_span(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, span_x),
-          sweep = trapezoidal_wing_sweep_at_span(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, span_x),
-          af = airfoil(WING_AIRFOIL, chord),
-          chord_p = SERVO_Y-sweep,
-          srv = struct_val(SERVOS, SERVO_TYPE[sn]),
-          srv_l = struct_val(srv, "l"),
-          srv_sink = struct_val(srv, "typ_sink"),
-          hatch = af_hatch(af, chord_p, srv_l),
-          angle = hatch[2])
-        right(span_x) {
-          // servo pocket
-          back(SERVO_Y)
-            up(hatch[0].y - srv_sink)
-              xrot(-angle)
-                servo_pocket_vertical(srv);
-          // wire tunnel from servo to main tunnel
-          back(SERVO_WIRE_TUNNEL_EXIT)
-            down(SERVO_WIRE_TUNNEL_D/2)
-              top_half()
-                ycyl(l=SERVO_Y-SERVO_WIRE_TUNNEL_EXIT, d=SERVO_WIRE_TUNNEL_D, anchor=FRONT);
-        }
+    // servos
+    if(len(SERVO_X)) {
+      // servo wire tunnel--end even with outboard-most servo's outer edge
+      let(outboard_servo_n = len(SERVO_X) - 1,
+          outboard_servo_x = SERVO_X[outboard_servo_n],
+          outboard_servo   = struct_val(SERVOS, SERVO_TYPE[outboard_servo_n]),
+          outboard_servo_w = struct_val(outboard_servo, "w"))
+        spar(SERVO_WIRE_TUNNEL_EXIT, SERVO_WIRE_TUNNEL_D, outboard_servo_x+outboard_servo_w/2);
+      // servo pockets
+      for(sn=[0:len(SERVO_X)-1])
+        let(span_x = SERVO_X[sn],
+            chord = trapezoidal_wing_chord_at_span(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, span_x),
+            sweep = trapezoidal_wing_sweep_at_span(ROOT_CHORD, TIP_CHORD, LE_SWEEP, PANEL_SPAN, span_x),
+            af = airfoil(WING_AIRFOIL, chord),
+            chord_p = SERVO_Y-sweep,
+            srv = struct_val(SERVOS, SERVO_TYPE[sn]),
+            srv_l = struct_val(srv, "l"),
+            srv_sink = struct_val(srv, "typ_sink"),
+            hatch = af_hatch(af, chord_p, srv_l),
+            angle = hatch[2])
+          right(span_x) {
+            // servo pocket
+            back(SERVO_Y)
+              up(hatch[0].y - srv_sink)
+                xrot(-angle)
+                  servo_pocket_vertical(srv);
+            // wire tunnel from servo to main tunnel
+            back(SERVO_WIRE_TUNNEL_EXIT)
+              down(SERVO_WIRE_TUNNEL_D/2)
+                top_half()
+                  ycyl(l=SERVO_Y-SERVO_WIRE_TUNNEL_EXIT, d=SERVO_WIRE_TUNNEL_D, anchor=FRONT);
+          }
+    }
     // wing tang pockets
     for(p=WING_TANGS)
       back(p)
